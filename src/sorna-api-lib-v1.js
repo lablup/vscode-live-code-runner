@@ -1,4 +1,4 @@
-'use babel';
+'use strict';
 /*
 Sorna Cloud Javascript API Library (v1)
 =======================================
@@ -11,7 +11,7 @@ Licensed under MIT
 var fetch, Headers = require('whatwg-fetch');
 var crypto = require('crypto');
 
-class SornaAPILib {
+export default class SornaAPILib {
   constructor() {
     this.code = null;
     this._accessKey = null;
