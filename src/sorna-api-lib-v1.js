@@ -11,7 +11,7 @@ Licensed under MIT
 //import Headers from 'node-fetch';
 //var {fetch, Headers} = require('node-fetch');
 //import Headers from 'node-fetch/headers';
-import {fetch, Headers} from 'node-fetch';
+import fetch, {Headers} from 'node-fetch';
 
 var crypto = require('crypto');
 
