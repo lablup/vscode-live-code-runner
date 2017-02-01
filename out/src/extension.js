@@ -2,21 +2,322 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 const vscode = require("vscode");
-//import SornaAPILib from './sorna-api-lib-v1';
+const Sorna = require("./sorna-api-lib-v1");
 //var fetch, Headers = require('whatwg-fetch');
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 function activate(context) {
-    // Use the console to output diagnostic information (console.log) and errors (console.error)
-    // This line of code will only be executed once when your extension is activated
-    console.log('Congratulations, your extension is now active!');
-    // The command has been defined in the package.json file
-    // Now provide the implementation of the command with  registerCommand
-    // The commandId parameter must match the command field in package.json
+    class SornaCodeRunnerView {
+        provideTextDocumentContent() {
+            return this.createView();
+        }
+        createView() {
+            return `<body><em>TEST</em></body>`;
+        }
+    }
+    class LiveCodeRunnerView2 {
+        constructor() {
+            this.output = vscode.window.createOutputChannel("Result");
+        }
+        // Clear all views
+        clearView() {
+            return this.output.clear();
+        }
+        // Set content
+        setContent(content) {
+            return this.output.append(content);
+        }
+        // Clear content
+        clearContent() {
+            return this.output.clear();
+        }
+        // Set error message
+        setErrorMessage(content) {
+            return this.output.append(content);
+        }
+        // Adds console message
+        addConsoleMessage(content) {
+            return this.output.append(content);
+        }
+        // Clears console message
+        clearConsoleMessage() {
+            return this.output.clear();
+        }
+        // Clears error message
+        clearErrorMessage() {
+            return this.output.clear();
+        }
+        show() {
+            return this.output.show();
+        }
+    }
+    class LiveCodeRunner {
+        constructor() {
+            this.hash_type = 'sha256';
+            this.baseURL = 'https://api.sorna.io';
+            this.resultPanel = null;
+            this.code = null;
+            this.accessKey = null;
+            this.secretKey = null;
+            this.signKey = null;
+            this.kernelId = null;
+            this.kernelType = null;
+            this.LiveCodeRunnerView = new LiveCodeRunnerView2();
+            this.SornaAPILib = new Sorna.SornaAPILib();
+            this.SornaAPILib.accessKey = this.getAccessKey();
+            this.SornaAPILib.secretKey = this.getSecretKey();
+        }
+        getAccessKey() {
+            let accessKey = 'test';
+            if (accessKey) {
+                accessKey = accessKey.trim();
+            }
+            return accessKey;
+        }
+        getSecretKey() {
+            let secretKey = 'test';
+            if (secretKey) {
+                secretKey = secretKey.trim();
+            }
+            return secretKey;
+        }
+        checkMandatorySettings() {
+            let missingSettings = [];
+            if (!this.getAccessKey()) {
+                missingSettings.push("Access Key");
+            }
+            if (!this.getSecretKey()) {
+                missingSettings.push("Secret Key");
+            }
+            if (missingSettings.length) {
+                this.notifyMissingMandatorySettings(missingSettings);
+            }
+            return missingSettings.length === 0;
+        }
+        notifyMissingMandatorySettings(missingSettings) {
+            let notification;
+            let context = this;
+            let errorMsg = `live-code-runner: Please input following settings: ${missingSettings.join(', ')}`;
+            notification = vscode.window.showInformationMessage(errorMsg);
+            return true;
+        }
+        runcode() {
+            this.LiveCodeRunnerView.clearConsoleMessage();
+            return this.sendCode();
+        }
+        getAPIversion() {
+            return this.SornaAPILib.getAPIversion();
+        }
+        createKernel(kernelType) {
+            let parentObj = this;
+            let msg = "Preparing kernel...";
+            this.LiveCodeRunnerView.addConsoleMessage(msg);
+            return this.SornaAPILib.createKernel(kernelType)
+                .then(function (response) {
+                let notification;
+                if (response.ok === false) {
+                    let errorMsg = `live-code-runner: ${response.statusText}`;
+                    notification = vscode.window.showErrorMessage(errorMsg);
+                    return false;
+                }
+                else if (response.status === 201) {
+                    return response.json().then(function (json) {
+                        console.log(`Kernel ID: ${json.kernelId}`);
+                        parentObj.kernelId = json.kernelId;
+                        msg = "Kernel prepared.";
+                        parentObj.LiveCodeRunnerView.addConsoleMessage(msg);
+                        //notification = atom.notifications.addSuccess(msg);
+                        //setTimeout(() => notification.dismiss(), 1000);
+                        parentObj.LiveCodeRunnerView.setKernelIndicator(kernelType);
+                        return true;
+                    });
+                }
+            }).catch(e => {
+            });
+            ;
+        }
+        destroyKernel(kernelId) {
+            let msg = "Destroying kernel...";
+            this.LiveCodeRunnerView.addConsoleMessage(msg);
+            return this.SornaAPILib.destroyKernel(kernelId)
+                .then(function (response) {
+                if (response.ok === false) {
+                    if (response.status !== 404) {
+                        let errorMsg = `live-code-runner: kernel destroy failed - ${response.statusText}`;
+                        let notification = vscode.window.showErrorMessage(errorMsg);
+                        return false;
+                    }
+                    else {
+                        return true;
+                    }
+                }
+                return true;
+            }, e => false);
+        }
+        refreshKernel() {
+            let msg = "Refreshing kernel...";
+            this.LiveCodeRunnerView.addConsoleMessage(msg);
+            return this.SornaAPILib.refreshKernel(this.kernelId)
+                .then(function (response) {
+                let notification;
+                if (response.ok === false) {
+                    let errorMsg = `live-code-runner: ${response.statusText}`;
+                    notification = vscode.window.showErrorMessage(errorMsg);
+                }
+                else {
+                    if (response.status !== 404) {
+                        msg = "live-code-runner: kernel refreshed";
+                        notification = vscode.window.showInformationMessage(msg);
+                    }
+                }
+                return true;
+            }, e => false);
+        }
+        chooseKernelType() {
+            let grammar;
+            let editor = vscode.window.activeTextEditor;
+            if (editor) {
+                grammar = {};
+                grammar.name = 'python'; //editor.getGrammar();
+            }
+            else {
+                grammar = null;
+            }
+            if (grammar) {
+                let kernelName;
+                let grammarName = (grammar.name || grammar.scopeName).toLowerCase();
+                switch (grammarName) {
+                    case "python":
+                        let code = editor.document.getText();
+                        if (code.search("tensorflow") > 0) {
+                            kernelName = "tensorflow-python3-gpu";
+                        }
+                        else {
+                            kernelName = "python3";
+                        }
+                        break;
+                    case "r":
+                        kernelName = "r3";
+                        break;
+                    case "julia":
+                        kernelName = "julia";
+                        break;
+                    case "lua":
+                        kernelName = "lua5";
+                        break;
+                    case "php":
+                        kernelName = "php7";
+                        break;
+                    case "haskell":
+                        kernelName = "haskell";
+                        break;
+                    case "nodejs":
+                    case "javascript":
+                        kernelName = "nodejs4";
+                        break;
+                    default: kernelName = null;
+                }
+                console.log(`Kernel Language: ${kernelName}`);
+                return kernelName;
+            }
+        }
+        sendCode() {
+            let errorMsg, notification;
+            let kernelType = this.chooseKernelType();
+            if (kernelType === null) {
+                errorMsg = "live-code-runner: language is not specified by Visual Studio Code.";
+                notification = vscode.window.showErrorMessage(errorMsg + 'Check the grammar indicator at bottom bar and make sure that it is correctly recoginzed (NOT `Plain Text`).\nTry one of the followings:\n * Save current editor with proper file extension.\n * Install extra lauguage support package. (e.g. `language-r`, `language-haskell`)');
+                return false;
+            }
+            if ((kernelType !== this.kernelType) || (this.kernelId === null)) {
+                if (this.kernelId !== null) {
+                    let destroyAndCreateAndRun = this.destroyKernel(this.kernelId)
+                        .then(result => {
+                        if (result === true) {
+                            return this.createKernel(kernelType);
+                        }
+                        else {
+                            return false;
+                        }
+                    })
+                        .then(result => {
+                        if (result === true) {
+                            this.kernelType = kernelType;
+                            return this.sendCode();
+                        }
+                    });
+                    return true;
+                }
+                else {
+                    let createAndRun = this.createKernel(kernelType).then(result => {
+                        if (result === true) {
+                            this.kernelType = kernelType;
+                            return this.sendCode();
+                        }
+                    }).catch(e => {
+                        console.log("Error during kernel spawning.");
+                    });
+                    return true;
+                }
+            }
+            this.LiveCodeRunnerView.show();
+            let msg = "Running...";
+            this.LiveCodeRunnerView.clearContent();
+            this.LiveCodeRunnerView.addConsoleMessage(msg);
+            let editor = vscode.window.activeTextEditor;
+            this.code = editor.document.getText();
+            return this.SornaAPILib.runCode(this.code, this.kernelId)
+                .then(response => {
+                if (response.ok === false) {
+                    errorMsg = `live-code-runner: ${response.statusText}`;
+                    notification = vscode.window.showErrorMessage(errorMsg);
+                    if (response.status === 404) {
+                        this.createKernel(this.kernelType);
+                    }
+                }
+                else {
+                    msg = "live-code-runner: completed.";
+                    notification = vscode.window.showInformationMessage(msg);
+                    response.json().then(json => {
+                        let buffer = '';
+                        if (json.result.media) {
+                            for (let m of Array.from(json.result.media)) {
+                                if (m[0] === "image/svg+xml") {
+                                    buffer = buffer + m[1];
+                                }
+                            }
+                        }
+                        if (json.result.stdout) {
+                            buffer = buffer + '<br /><pre>' + json.result.stdout + '</pre>';
+                        }
+                        if (json.result.exceptions && (json.result.exceptions.length > 0)) {
+                            let errBuffer = '';
+                            for (let exception of Array.from(json.result.exceptions)) {
+                                errBuffer = errBuffer + exception[0] + '(' + exception[1].join(', ') + ')';
+                            }
+                            this.LiveCodeRunnerView.setErrorMessage(errBuffer);
+                        }
+                        this.LiveCodeRunnerView.clearErrorMessage();
+                        return this.LiveCodeRunnerView.setContent(buffer);
+                    });
+                }
+                setTimeout(() => notification.dismiss(), 1000);
+                return true;
+            });
+        }
+    }
+    let provider = new SornaCodeRunnerView();
+    let registration = vscode.workspace.registerTextDocumentContentProvider('code-runner-view', provider);
+    let previewUri = vscode.Uri.parse('code-runner-view://authority/code-runner-view');
+    //let SornaAPILib = new SornaAPILib();
+    let CodeRunner = new LiveCodeRunner();
     let disposable = vscode.commands.registerCommand('extension.runCode', () => {
-        // The code you place here will be executed every time your command is executed
-        // Display a message box to the user
-        vscode.window.showInformationMessage('Hello World!');
+        return CodeRunner.sendCode();
+        //.then((success) => {
+        //return vscode.commands.executeCommand('vscode.previewHtml', previewUri, vscode.ViewColumn.Two, 'Result').then((success) => {
+        //}, (reason) => {
+        //	vscode.window.showErrorMessage(reason);
+        //});
     });
     context.subscriptions.push(disposable);
 }

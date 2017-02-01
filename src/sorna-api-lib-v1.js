@@ -8,7 +8,11 @@ Licensed under MIT
 */
 /*jshint esnext: true */
 //import crypto from 'crypto';
-var fetch, Headers = require('whatwg-fetch');
+//import Headers from 'node-fetch';
+//var {fetch, Headers} = require('node-fetch');
+//import Headers from 'node-fetch/headers';
+import {fetch, Headers} from 'node-fetch';
+
 var crypto = require('crypto');
 
 export default class SornaAPILib {
@@ -26,14 +30,14 @@ export default class SornaAPILib {
 
   get accessKey() {
     if (this._accessKey === null) {
-      console.debug('No access key is given');
+      console.log('No access key is given');
     }
     return this._accessKey;
   }
 
   get secretKey() {
     if (this._secretKey === null) {
-      console.debug('No secret key is given');
+      console.log('No secret key is given');
     }
     return this._secretKey;
   }
