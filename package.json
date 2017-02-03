@@ -2,7 +2,7 @@
     "name": "live-code-runner",
     "displayName": "live-code-runner",
     "description": "Run code snippets via Sorna Cloud API server (https://cloud.sorna.io)",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "publisher": "lablup",
     "engines": {
         "vscode": "^1.5.0"
