@@ -4,49 +4,84 @@ import * as vscode from 'vscode';
 export class LiveCodeRunnerView {
     public result;
     public console_log;
+    private provider;
+    private registration;
+    private previewUri;
     constructor(){
-        this.result = vscode.window.createOutputChannel("Sorna");
-        this.console_log = vscode.window.createOutputChannel("Sorna2");
-    }
-    // Clear all views
-    clearView() {
-        return this.result.clear();
-    }
-
-    // Set content
-    setContent(content) {
-        return this.result.append(content);
+        this.console_log = vscode.window.createOutputChannel("Sorna");
+        this.provider = new SornaCodeRunnerInteractiveView();
+        this.registration = vscode.workspace.registerTextDocumentContentProvider('code-runner-view', this.provider);
+        this.previewUri = vscode.Uri.parse('code-runner-view://authority/code-runner-view');
     }
 
     // Clear content
-    clearContent() {
-        return this.result.clear();
+    clearConsole() {
+        return this.console_log.clear();
     }
 
     // Set error message
     setErrorMessage(content) {
-        return this.result.append(content);
+        return this.console_log.appendLine('[ERROR] '+ content);
     }
 
     // Adds console message
     addConsoleMessage(content) {
-        return this.result.appendLine(content);
+        return this.console_log.appendLine(content);
     }
 
-    // Clears console message
-    clearConsoleMessage() {
-        return this.result.clear();
+    showConsole() {
+        return this.console_log.show();
     }
 
-    // Clears error message
-    clearErrorMessage() {
-        return this.result.clear();
-    }
-    setKernelIndicator(kernelType) {
-        return true;
+    addHtmlContent(content) {
+        this.provider.appendContent(content);
+    	return this.provider.update(this.previewUri);
     }
 
-    show() {
-        return this.result.show();
+    clearHtmlContent() {
+        this.provider.clearContent();
+    	return this.provider.update(this.previewUri);
+    }
+
+    showResultPanel(){
+        return vscode.commands.executeCommand('vscode.previewHtml', this.previewUri, vscode.ViewColumn.Two, 'RESULT');
     }
 }
+
+export class SornaCodeRunnerInteractiveView implements vscode.TextDocumentContentProvider {
+    private _content: string;
+    private _onDidChange = new vscode.EventEmitter<vscode.Uri>();
+    public provideTextDocumentContent(uri: vscode.Uri): string {
+        return this.createView();
+    }
+    get onDidChange(): vscode.Event<vscode.Uri> {
+        return this._onDidChange.event;
+    }
+
+    public update(uri: vscode.Uri) {
+        this._onDidChange.fire(uri);
+    }
+
+    public setContent(content): boolean {
+        this._content = content;
+        return true;
+    }
+    public appendContent(content): boolean {
+        if (this._content === undefined) {
+            this._content = '';
+        }
+        this._content = this._content + content;
+        return true;
+    }
+    public clearContent(): boolean {
+        this._content = `<style>* {font-family:monospace;}</style>`;
+        return true;
+    }
+    private createView(): string {
+        if (this._content === undefined) {
+            this._content = '';
+        }
+        return `<style>* {font-family:monospace;}</style>` + this._content;
+    }
+}
+
