@@ -5,7 +5,7 @@
     "version": "0.0.2",
     "publisher": "lablup",
     "engines": {
-        "vscode": "^1.5.0"
+        "vscode": "^1.9.0"
     },
     "categories": [
         "Other"
