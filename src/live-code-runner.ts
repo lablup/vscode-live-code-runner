@@ -1,4 +1,11 @@
 'use strict';
+/*
+vscode-live-code-runner
+(C) Copyright 2016-2017 Lablup Inc.
+Licensed under MIT
+*/
+/*jshint esnext: true */
+
 import * as vscode from 'vscode';
 import * as Sorna from './sorna-api-lib-v1';
 import { LiveCodeRunnerView } from './live-code-runner-view';
