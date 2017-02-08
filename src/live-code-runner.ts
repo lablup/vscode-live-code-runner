@@ -13,8 +13,8 @@ import { LiveCodeRunnerView } from './live-code-runner-view';
 export class LiveCodeRunner {
     private resultPanel;
     private code: string;
-    private accessKey: string;
-    private secretKey: string;
+    public accessKey: string;
+    public secretKey: string;
     private signKey: string;
     private apiVersion: 'v1.20160915';
     private hash_type = 'sha256';
@@ -36,9 +36,6 @@ export class LiveCodeRunner {
         this.kernelType = null;
         this.LiveCodeRunnerView = new LiveCodeRunnerView();
         this.SornaAPILib = new Sorna.SornaAPILib();
-        this._config = vscode.workspace.getConfiguration('live-code-runner');
-        this.SornaAPILib.accessKey = this.getAccessKey();
-        this.SornaAPILib.secretKey = this.getSecretKey();
     }
 
     getAccessKey() {
@@ -75,6 +72,9 @@ export class LiveCodeRunner {
     }
 
     runcode() {
+        this._config = vscode.workspace.getConfiguration('live-code-runner');
+        this.SornaAPILib.accessKey = this.getAccessKey();
+        this.SornaAPILib.secretKey = this.getSecretKey();
         this.LiveCodeRunnerView.clearConsole();
         return this.sendCode();
     }
