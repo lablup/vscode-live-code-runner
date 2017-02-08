@@ -31,18 +31,18 @@
     ],
     "main": "./out/src/extension",
     "activationEvents": [
-        "onCommand:extension.runCode"
+        "onCommand:live-code-runner.runCode"
     ],
     "contributes": {
         "commands": [
             {
-                "command": "extension.runCode",
+                "command": "live-code-runner.runCode",
                 "title": "Run Code On Sorna"
             }
         ],
         "keybindings": [
             {
-                "command": "extension.runCode",
+                "command": "live-code-runner.runCode",
                 "key": "ctrl+alt+r"
             }
         ],
@@ -50,7 +50,7 @@
             "editor/context": [
                 {
                     "when": "!inOutput",
-                    "command": "extension.runCode",
+                    "command": "live-code-runner.runCode",
                     "group": "navigation"
                 }
             ]

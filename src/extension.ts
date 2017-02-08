@@ -10,7 +10,7 @@ import { LiveCodeRunner } from './live-code-runner';
 
 export function activate(context: vscode.ExtensionContext) {
   let CodeRunner = new LiveCodeRunner();
-  let disposable = vscode.commands.registerCommand('extension.runCode', () => {
+  let disposable = vscode.commands.registerCommand('live-code-runner.runCode', () => {
     return CodeRunner.sendCode();
   });
 
