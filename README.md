@@ -15,7 +15,8 @@ Run codes in Visual Studio Code via Sorna Cloud API server (https://cloud.sorna.
 
  1. Write your code on editor.
  2. Run code by
-  * Choose `Run code on Sorna` at context menu
+  * Choose `Run code on Sorna` at context menu OR
+  * Type sorna and choose `Run code on Sorna` at command palette.
  3. Execution result will be shown at bottom pane. If there are interactive media outputs, right pane also will appear.
 
 <iframe width="853" height="480" src="https://www.youtube.com/embed/IVX1SClEaMY" frameborder="0" allowfullscreen></iframe>
