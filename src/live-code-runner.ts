@@ -159,27 +159,34 @@ export class LiveCodeRunner {
             grammar = null;
         }
         if (grammar) {
-        let kernelName;
-        let grammarName = (grammar || grammar.scopeName).toLowerCase();
-        switch (grammarName) {
-            case "python":
-            let code = editor.document.getText();
-            if (code.search("tensorflow") > 0) {
-                kernelName = "tensorflow-python3-gpu";
-            } else {
-                kernelName = "python3";
+            let kernelName;
+            let grammarName = (grammar || grammar.scopeName).toLowerCase();
+            switch (grammarName) {
+                case "python":
+                let code = editor.document.getText();
+                if (code.search("tensorflow") > 0) {
+                    kernelName = "tensorflow-python3-gpu";
+                } else if (code.search("keras") > 0) {
+                    kernelName = "tensorflow-python3-gpu";
+                } else if (code.search("theano") > 0) {
+                    kernelName = "python3-theano";
+                } else if (code.search("caffe") > 0) {
+                    kernelName = "python3-caffe";
+                } else {
+                    kernelName = "python3";
+                }
+                break;
+                case "r": kernelName = "r3"; break;
+                case "julia": kernelName = "julia"; break;
+                case "lua": kernelName = "lua5"; break;
+                case "php": kernelName = "php7"; break;
+                case "haskell": kernelName = "haskell"; break;
+                case "matlab": case "octave": kernelName = "octave4"; break;
+                case "nodejs": case "javascript": kernelName = "nodejs4"; break;
+                default: kernelName = null;
             }
-            break;
-            case "r": kernelName = "r3"; break;
-            case "julia": kernelName = "julia"; break;
-            case "lua": kernelName = "lua5"; break;
-            case "php": kernelName = "php7"; break;
-            case "haskell": kernelName = "haskell"; break;
-            case "nodejs": case "javascript": kernelName = "nodejs4"; break;
-            default: kernelName = null;
-        }
-        console.log(`Kernel Language: ${kernelName}`);
-        return kernelName;
+            console.log(`Kernel Language: ${kernelName}`);
+            return kernelName;
         }
     }
 

@@ -17,27 +17,27 @@ Visual Studio Code extension to run code snippets via Sorna Cloud API server (ht
 
 ## Requirements
 
-### Supported Language on Sorna Cloud
+### Supported Languages / frameworks on Sorna Cloud
 
  * Python 2.7
  * Python 3.6
  * TensorFlow 0.12
+ * Theano 0.8
+ * Keras 1.2
  * PHP 7
  * Javascript (via V8 engine)
  * Node.js 4
  * R 3
+ * Octave 4.2
  * Julia
  * haskell
  * Lua 5
 
 ### Languages (to be ready soon)
 
- * Octave 4
  * Rust
  * Swift (via Swift opensource version)
- * Theano
  * Caffe
- * Keras
  * C++ (via gcc)
 
 ## How-to
