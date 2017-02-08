@@ -2,7 +2,7 @@
     "name": "live-code-runner",
     "displayName": "Live Code Runner",
     "description": "Run your codes via Sorna Cloud API server (https://cloud.sorna.io)",
-    "version": "0.1.5",
+    "version": "0.1.6",
     "icon": "images/live-code-runner-logo.png",
     "publisher": "lablup",
     "license": "See LICENSE in LICENSE file",
