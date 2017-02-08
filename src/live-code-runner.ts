@@ -42,7 +42,7 @@ export class LiveCodeRunner {
     }
 
     getAccessKey() {
-        let accessKey = this._config.get<string>('accessKey');
+        let accessKey = this._config.get('accessKey');
         return accessKey;
     }
 
