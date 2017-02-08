@@ -1,26 +1,83 @@
 {
     "name": "live-code-runner",
-    "displayName": "live-code-runner",
-    "description": "Run codes via Sorna Cloud API server (https://cloud.sorna.io)",
-    "version": "0.1.0",
+    "displayName": "Live Code Runner",
+    "description": "Run your codes via Sorna Cloud API server (https://cloud.sorna.io)",
+    "version": "0.1.1",
+    "icon": "images/live-code-runner-logo.png",
     "publisher": "lablup",
+    "license": "See LICENSE in LICENSE file",
+    "bugs": {
+        "url": "https://github.com/lablup/vscode-live-code-runner/issues"
+    },
+    "homepage": "https://github.com/lablup/vscode-live-code-runner/README.md",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Microsoft/vscode-spell-check.git"
+    },
+    "categories": [
+        "Languages", "Debuggers", "Other"
+    ],
     "engines": {
         "vscode": "^1.9.0"
     },
-    "categories": [
-        "Other"
+    "keywords": [
+        "python",
+        "php",
+        "javascript",
+        "node",
+        "tensorflow",
+        "caffe",
+        "ruby",
+        "r",
+        "lua",
+        "julia",
+        "haskell",
+        "octave",
+        "theano",
+        "snippet"
     ],
+    "main": "./out/src/extension",
     "activationEvents": [
         "onCommand:extension.runCode"
     ],
-    "main": "./out/src/extension",
     "contributes": {
         "commands": [
             {
                 "command": "extension.runCode",
                 "title": "Run Code On Sorna"
             }
-        ]
+        ],
+        "keybindings": [
+            {
+                "command": "extension.runCode",
+                "key": "ctrl+alt+r"
+            }
+        ],
+        "menus": {
+            "editor/context": [
+                {
+                    "when": "!inOutput",
+                    "command": "extension.runCode",
+                    "group": "navigation"
+                }
+            ]
+        },
+        "configuration": {
+            "type": "object",
+            "title": "Live code runner",
+            "properties": {
+                "live-code-runner.accessKey": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Access API key generated at cloud.sorna.io."
+                },
+                "live-code-runner.secretKey": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Secret API key generated at cloud.sorna.io."
+                }
+            }
+        }
     },
     "scripts": {
         "vscode:prepublish": "tsc -p ./",

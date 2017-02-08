@@ -4,12 +4,19 @@ Run codes in Visual Studio Code via Sorna Cloud API server (https://cloud.sorna.
 
  `live-code-runner` is Visual Studio Code editor extension to add remote code execution feature using [Sorna Cloud API Service](https://cloud.sorna.io). `live-code-runner` uses [Sorna framework](http://sorna.io) and [Sorna API](http://docs.sorna.io). Currently, Sorna supports 11 programming languages now.
 
-## Set-up
+## How-to
 
- * Install `live-code-runner` extension.
- * Get Sorna API access / secret key at [Sorna Cloud API](https://cloud.sorna.io)
- * Type your keys on extension preferences page.
- * You are ready to go!
+### API Key registration
+
+ 1. Get your own API key pair (API key / Secret key) at [Sorna Cloud API Service](https://cloud.sorna.io)
+ 2. Type your API key pair on preferences page (Code - Preferences - Settings - 'live-code-runner')
+
+### Run
+
+ 1. Write your code on editor.
+ 2. Run code by
+  * Choose `Run code on Sorna` at context menu
+ 3. Execution result will be shown at bottom pane. If there are interactive media outputs, right pane also will appear.
 
 <iframe width="853" height="480" src="https://www.youtube.com/embed/IVX1SClEaMY" frameborder="0" allowfullscreen></iframe>
 
@@ -38,21 +45,6 @@ Run codes in Visual Studio Code via Sorna Cloud API server (https://cloud.sorna.
  * Caffe
  * C++ (via gcc)
 
-## How-to
-
-### API Key registration
-
- 1. Get your own API key pair (API key / Secret key) at [Sorna Cloud API Service](https://cloud.sorna.io)
- 2. Type your API key pair on preferences page (Code - Preferences - settings - 'live-code-runner')
-
-### Run
-
- 1. Write your code on editor.
- 2. Run code by
-  * Choose `Run code on Sorna` at context menu
-  * Type `sorna` and choose `live-code-runner: Run` at command palette.
- 3. Execution result will be shown at bottom pane. If there are interactive media outputs, right pane also will appear.
-
 ## Extension Settings
 
 This extension contributes the following settings:
@@ -72,3 +64,7 @@ This extension contributes the following settings:
 ## Release Notes
 
 Refer [CHANGELOG](CHANGELOG.md) for details.
+
+## Contribution
+
+We endorse you to fork this [repository](https://github.com/lablup/vscode-live-code-runner). Pull requests are welcomed.
