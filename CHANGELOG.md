@@ -6,7 +6,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [Unreleased]
  - Inline I/O support
 
-## [0.1.2] - 2017-02-08
+## [0.1.3] - 2017-02-08
 ### Changed
  - Update package information
  - Add logo to the package description
@@ -21,6 +21,6 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
  - Initial release
  - Port Atom plugin to VSCode extension
 
-[0.1.2]: https://github.com/lablup/vscode-live-code-runner/compare/v0.1.1...v0.1.2
+[0.1.3]: https://github.com/lablup/vscode-live-code-runner/compare/v0.1.1...v0.1.3
 [0.1.1]: https://github.com/lablup/vscode-live-code-runner/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/lablup/vscode-live-code-runner/releases/tag/v0.1.0
