@@ -1,6 +1,6 @@
-# live-code-runner README
+# live-code-runner
 
-Visual Studio Code extension to run code snippets via Sorna Cloud API server (https://cloud.sorna.io) You can run your code (or code snippet) without installing or setting any programming environment with this extension.
+Run codes in Visual Studio Code via Sorna Cloud API server (https://cloud.sorna.io). You can run your code (or code snippet) without installing or setting any programming environment with this extension.
 
  `live-code-runner` is Visual Studio Code editor extension to add remote code execution feature using [Sorna Cloud API Service](https://cloud.sorna.io). `live-code-runner` uses [Sorna framework](http://sorna.io) and [Sorna API](http://docs.sorna.io). Currently, Sorna supports 11 programming languages now.
 
@@ -12,8 +12,6 @@ Visual Studio Code extension to run code snippets via Sorna Cloud API server (ht
  * You are ready to go!
 
 <iframe width="853" height="480" src="https://www.youtube.com/embed/IVX1SClEaMY" frameborder="0" allowfullscreen></iframe>
-
-\!\[feature X\]\(images/feature-x.png\)
 
 ## Requirements
 
@@ -57,17 +55,14 @@ Visual Studio Code extension to run code snippets via Sorna Cloud API server (ht
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-
 This extension contributes the following settings:
 
-* `live-code-runner.accessKey`: set your access key given by https://cloud.sorna.io
-* `live-code-runner.secretKey`: set your secret key given by https://cloud.sorna.io
+* `live-code-runner.accessKey`: set your access key created at https://cloud.sorna.io .
+* `live-code-runner.secretKey`: set your secret key created at https://cloud.sorna.io .
 
 ## Known Issues
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+ * Text input support will be coming soon.
 
 ## Troubleshooting
 
@@ -75,3 +70,5 @@ Calling out known issues can help limit users opening duplicate issues against y
   * Make sure that language name of your code is correctly recognized by Visual Studio Code. You can see the grammar of current editor at the right side of bottom bar. If your language is not supported by Visual Studio Code, please install language support extensions.
 
 ## Release Notes
+
+Refer [CHANGELOG](CHANGELOG.md) for details.

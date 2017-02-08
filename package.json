@@ -1,8 +1,8 @@
 {
     "name": "live-code-runner",
     "displayName": "live-code-runner",
-    "description": "Run code snippets via Sorna Cloud API server (https://cloud.sorna.io)",
-    "version": "0.0.2",
+    "description": "Run codes via Sorna Cloud API server (https://cloud.sorna.io)",
+    "version": "0.1.0",
     "publisher": "lablup",
     "engines": {
         "vscode": "^1.9.0"
@@ -15,10 +15,12 @@
     ],
     "main": "./out/src/extension",
     "contributes": {
-        "commands": [{
-            "command": "extension.runCode",
-            "title": "Run Code On Sorna"
-        }]
+        "commands": [
+            {
+                "command": "extension.runCode",
+                "title": "Run Code On Sorna"
+            }
+        ]
     },
     "scripts": {
         "vscode:prepublish": "tsc -p ./",
