@@ -13,6 +13,7 @@ Licensed under MIT
 //import Headers from 'node-fetch/headers';
 import fetch, {Headers} from 'node-fetch';
 
+//import crypto from 'crypto';
 var crypto = require('crypto');
 
 export default class SornaAPILib {
@@ -24,6 +25,7 @@ export default class SornaAPILib {
     this.apiVersion = 'v1.20160915';
     this.hash_type = 'sha256';
     this.baseURL = 'https://api.sorna.io';
+    this.endpoint = 'api.sorna.io';
     this.kernelId = null;
     this.kernelType = null;
   }
@@ -94,7 +96,7 @@ export default class SornaAPILib {
 
   refreshKernel(kernelId) {
     let requestInfo = this.newRequest('PATCH', `/v1/kernel/${kernelId}`, null);
-    return fetch(this.baseURL + '/v1/kernel/'+kernelId, requestInfo)
+    return fetch(this.baseURL + '/v1/kernel/'+kernelId, requestInfo);
   }
 
   newRequest(method, queryString, body) {
@@ -108,10 +110,9 @@ export default class SornaAPILib {
     }
     let aStr = this.getAuthenticationString(method, queryString, d.toISOString(), requestBody);
     let sig = this.sign(this.signKey, 'binary', aStr, 'hex');
-
     let requestHeaders = new Headers({
-      "Content-Type": "application/json",
-      "Content-Length": requestBody.length.toString(),
+      "Content-Type": "application/json; charset=utf-8",
+      "Content-Length": Buffer.byteLength(requestBody),
       'X-Sorna-Version': this.apiVersion,
       "X-Sorna-Date": d.toISOString(),
       "Authorization": `Sorna signMethod=HMAC-SHA256, credential=${this.accessKey}:${sig}`
@@ -136,7 +137,7 @@ export default class SornaAPILib {
   }
 
   getAuthenticationString(method, queryString, dateValue, bodyValue) {
-    return ( method + '\n' + queryString + '\n' + dateValue + '\n' + 'host:api.sorna.io'+ '\n'+'content-type:application/json' + '\n' + 'x-sorna-version:'+this.apiVersion + '\n' + crypto.createHash(this.hash_type).update(bodyValue).digest('hex'));
+    return ( method + '\n' + queryString + '\n' + dateValue + '\n' + 'host:' + this.endpoint +  '\n'+'content-type:application/json' + '\n' + 'x-sorna-version:'+this.apiVersion + '\n' + crypto.createHash(this.hash_type).update(bodyValue).digest('hex'));
   }
 
   getCurrentDate(now) {
@@ -156,7 +157,7 @@ export default class SornaAPILib {
 
   getSignKey(secret_key, now) {
     let k1 = this.sign(secret_key, 'utf8', this.getCurrentDate(now), 'binary');
-    let k2 = this.sign(k1, 'binary', 'api.sorna.io', 'binary');
+    let k2 = this.sign(k1, 'binary', this.endpoint, 'binary');
     return k2;
   }
 }
