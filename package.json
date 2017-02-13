@@ -2,7 +2,7 @@
     "name": "live-code-runner",
     "displayName": "Live Code Runner",
     "description": "Run your codes via Sorna Cloud API server (https://cloud.sorna.io)",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "icon": "images/live-code-runner-logo.png",
     "publisher": "lablup",
     "license": "See LICENSE in LICENSE file",
@@ -57,9 +57,9 @@
         },
         "languages": [
             {
-            "id": "live-code-runner-console",
-            "mimetypes": [
-                "text/x-code-output"
+                "id": "live-code-runner-console",
+                "mimetypes": [
+                    "text/x-code-output"
                 ]
             }
         ],
