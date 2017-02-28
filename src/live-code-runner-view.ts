@@ -80,14 +80,22 @@ export class SornaCodeRunnerInteractiveView implements vscode.TextDocumentConten
         return true;
     }
     public clearContent(): boolean {
-        this._content = `<style>* {font-family:monospace;}</style>`;
+        this._content = `<style>* {font-family:monospace;} 
+            .live-code-runner-error-message {
+                color: #ff2222;
+            }
+            </style>`;
         return true;
     }
     private createView(): string {
         if (this._content === undefined) {
             this._content = '';
         }
-        return `<style>* {font-family:monospace;}</style>` + this._content;
+        return `<style>* {font-family:monospace;}
+            .live-code-runner-error-message {
+                color: #ff2222;
+            }
+            </style>` + this._content;
     }
 }
 

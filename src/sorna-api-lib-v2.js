@@ -1,19 +1,13 @@
-'use strict';
+'use babel';
 /*
-Sorna Cloud Javascript API Library (v1)
+Sorna Cloud Javascript API Library (v2)
 =======================================
 
 (C) Copyright 2016-2017 Lablup Inc.
 Licensed under MIT
 */
 /*jshint esnext: true */
-//import crypto from 'crypto';
-//import Headers from 'node-fetch';
-//var {fetch, Headers} = require('node-fetch');
-//import Headers from 'node-fetch/headers';
 import fetch, {Headers} from 'node-fetch';
-
-//import crypto from 'crypto';
 var crypto = require('crypto');
 
 export default class SornaAPILib {
@@ -22,6 +16,7 @@ export default class SornaAPILib {
     this._accessKey = null;
     this._secretKey = null;
     this.signKey = null;
+    this.apiVersionMajor = 'v1';
     this.apiVersion = 'v1.20160915';
     this.hash_type = 'sha256';
     this.baseURL = 'https://api.sorna.io';
@@ -32,14 +27,14 @@ export default class SornaAPILib {
 
   get accessKey() {
     if (this._accessKey === null) {
-      console.log('No access key is given');
+      console.debug('No access key is given');
     }
     return this._accessKey;
   }
 
   get secretKey() {
     if (this._secretKey === null) {
-      console.log('No secret key is given');
+      console.debug('No secret key is given');
     }
     return this._secretKey;
   }
@@ -66,7 +61,7 @@ export default class SornaAPILib {
       cache: 'default'
     };
 
-    return fetch(this.baseURL+'/v1', requestInfo)
+    return fetch(this.baseURL+'/'+this.apiVersionMajor, requestInfo)
       .then( function(response) {
         if (response.version) {
           console.log(`API version: ${response.version}`);
@@ -86,17 +81,17 @@ export default class SornaAPILib {
       }
     };
     let requestInfo = this.newRequest('POST', '/v1/kernel/create', requestBody);
-    return fetch(this.baseURL + '/v1/kernel/create', requestInfo);
+    return fetch(this.baseURL + '/' + this.apiVersionMajor + '/kernel/create', requestInfo);
   }
 
   destroyKernel(kernelId) {
     let requestInfo = this.newRequest('DELETE', `/v1/kernel/${kernelId}`, null);
-    return fetch(this.baseURL + '/v1/kernel/'+kernelId, requestInfo);
+    return fetch(this.baseURL + '/' + this.apiVersionMajor + '/kernel/'+kernelId, requestInfo);
   }
 
   refreshKernel(kernelId) {
-    let requestInfo = this.newRequest('PATCH', `/v1/kernel/${kernelId}`, null);
-    return fetch(this.baseURL + '/v1/kernel/'+kernelId, requestInfo);
+    let requestInfo = this.newRequest('PATCH', `/${this.apiVersionMajor}/kernel/${kernelId}`, null);
+    return fetch(this.baseURL + '/' + this.apiVersionMajor + '/kernel/'+kernelId, requestInfo);
   }
 
   newRequest(method, queryString, body) {
@@ -108,8 +103,10 @@ export default class SornaAPILib {
     } else {
       requestBody = JSON.stringify(body);
     }
+
     let aStr = this.getAuthenticationString(method, queryString, d.toISOString(), requestBody);
     let sig = this.sign(this.signKey, 'binary', aStr, 'hex');
+
     let requestHeaders = new Headers({
       "Content-Type": "application/json; charset=utf-8",
       "Content-Length": Buffer.byteLength(requestBody),
@@ -133,7 +130,7 @@ export default class SornaAPILib {
       "code": code
     };
     let requestInfo = this.newRequest('POST', `/v1/kernel/${kernelId}`, requestBody);
-    return fetch(this.baseURL + '/v1/kernel/' + kernelId, requestInfo);
+    return fetch(this.baseURL + '/' + this.apiVersionMajor + '/kernel/' + kernelId, requestInfo);
   }
 
   getAuthenticationString(method, queryString, dateValue, bodyValue) {

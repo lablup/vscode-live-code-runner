@@ -7,7 +7,7 @@ Licensed under MIT
 /*jshint esnext: true */
 
 import * as vscode from 'vscode';
-import * as Sorna from './sorna-api-lib-v1';
+import * as Sorna from './sorna-api-lib-v2';
 import { LiveCodeRunnerView } from './live-code-runner-view';
 
 export class LiveCodeRunner {
@@ -287,20 +287,20 @@ export class LiveCodeRunner {
                                 this.waiting_input = false;
                             }
                         }
-                        if (json.result.media) {
-                            for (let m of Array.from(json.result.media)) {
-                                if (m[0] === "image/svg+xml") {
-                                htmlOutput = htmlOutput + m[1];
+                        if (json.result.console) {
+                            for (let c of Array.from(json.result.console)) {
+                                if (c[0] == 'stdout') {
+                                htmlOutput = htmlOutput  + '<br /><pre>'+this.escapeHtml(c[1])+'</pre>';
+                                }
+                                if (c[0] == 'stderr') {
+                                htmlOutput = htmlOutput  + '<br /><pre class="live-code-runner-error-message">'+this.escapeHtml(c[1])+'</pre>';
+                                }
+                                if (c[0] == 'media') {
+                                if (c[1][0] === "image/svg+xml") {
+                                    htmlOutput = htmlOutput + c[1][1];
+                                }
                                 }
                             }
-                        }
-                        if (json.result.stdout) {
-                            buffer = json.result.stdout;
-                            htmlOutput = htmlOutput + '<br /><pre>'+json.result.stdout+'</pre>';
-                        }
-                        if (json.result.stderr) {
-                            this.LiveCodeRunnerView.setErrorMessage(json.result.stderr);
-                            htmlOutput = htmlOutput + '<br /><pre>'+json.result.stderr+'</pre>';
                         }
                         if (json.result.exceptions && (json.result.exceptions.length > 0)) {
                             let errBuffer = '';
@@ -338,6 +338,11 @@ export class LiveCodeRunner {
                 return true;
             }
         );
+    }
+    escapeHtml(text) {
+        return text.replace(/[\"&<>]/g, function (a) {
+        return { '"': '&quot;', '&': '&amp;', '<': '&lt;', '>': '&gt;' }[a];
+        });
     }
 }
 
