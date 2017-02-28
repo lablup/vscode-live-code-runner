@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [Unreleased]
  - Inline I/O support
 
+## [1.0.0] - 2017-02-28
+### Changed
+ - Support Sorna Cloud API V2
+ - Complete support of real-time interactive input commands (e.g. `a = input("hello world")`)
+ - Generalized output pane. Now standard output / error and multimedia outputs are printed in one RESULT pane sequentially.
+
 ## [0.3.0] - 2017-02-13
 ### Changed
  - Supports real-time interactive input commands (e.g. `a = input("hello world")`)
