@@ -302,13 +302,6 @@ export class LiveCodeRunner {
                                 }
                             }
                         }
-                        if (json.result.exceptions && (json.result.exceptions.length > 0)) {
-                            let errBuffer = '';
-                            for (let exception of Array.from(json.result.exceptions)) {
-                                errBuffer = errBuffer + exception[0] + '(' + exception[1].join(', ') + ')';
-                            }
-                            this.LiveCodeRunnerView.setErrorMessage(errBuffer);
-                        } 
                         if (htmlOutput != '') {
                             this.LiveCodeRunnerView.addHtmlContent(htmlOutput);                        
                             this.LiveCodeRunnerView.showResultPanel();
