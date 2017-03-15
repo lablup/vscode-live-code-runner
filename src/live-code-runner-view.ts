@@ -84,6 +84,7 @@ export class SornaCodeRunnerInteractiveView implements vscode.TextDocumentConten
             .live-code-runner-error-message {
                 color: #ff2222;
             }
+            pre { margin:0;padding:0;}
             </style>`;
         return true;
     }
@@ -95,6 +96,7 @@ export class SornaCodeRunnerInteractiveView implements vscode.TextDocumentConten
             .live-code-runner-error-message {
                 color: #ff2222;
             }
+            pre { margin:0;padding:0;}
             </style>` + this._content;
     }
 }

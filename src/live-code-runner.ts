@@ -268,15 +268,15 @@ export class LiveCodeRunner {
                     }
                     this.continuation = false;
                 } else {
-                    msg = "live-code-runner: completed.";
-                    //notification = vscode.window.showInformationMessage(msg);
-                    vscode.window.setStatusBarMessage(msg, 800);
                     response.json().then( json => {
                         let buffer = '';
                         let htmlOutput = '';
                         if (json.result.status) {
                             if (json.result.status == "continued") {
                                 this.continuation = true;
+                                msg = "live-code-runner: executing...";
+                                vscode.window.setStatusBarMessage(msg, 2000);
+                                setTimeout(() => this.sendCode(), 1);
                             } else if (json.result.status == "waiting-input") {
                                 this.continuation = true;
                                 this.waiting_input = true;
@@ -288,10 +288,10 @@ export class LiveCodeRunner {
                         if (json.result.console) {
                             for (let c of Array.from(json.result.console)) {
                                 if (c[0] == 'stdout') {
-                                htmlOutput = htmlOutput  + '<br /><pre>'+this.escapeHtml(c[1])+'</pre>';
+                                htmlOutput = htmlOutput  + '<pre>'+this.escapeHtml(c[1])+'</pre>';
                                 }
                                 if (c[0] == 'stderr') {
-                                htmlOutput = htmlOutput  + '<br /><pre class="live-code-runner-error-message">'+this.escapeHtml(c[1])+'</pre>';
+                                htmlOutput = htmlOutput  + '<pre class="live-code-runner-error-message">'+this.escapeHtml(c[1])+'</pre>';
                                 }
                                 if (c[0] == 'media') {
                                 if (c[1][0] === "image/svg+xml") {
@@ -304,7 +304,9 @@ export class LiveCodeRunner {
                             this.LiveCodeRunnerView.addHtmlContent(htmlOutput);                        
                             this.LiveCodeRunnerView.showResultPanel();
                         }
-                        this.LiveCodeRunnerView.addConsoleMessage(buffer);
+                        if (buffer != '') {
+                            this.LiveCodeRunnerView.addConsoleMessage(buffer);
+                        }
                         if (json.result.status == "finished") {
                             let elapsed = (new Date().getTime() - this._exec_starts) / 1000;
                             vscode.window.setStatusBarMessage('live-code-runner: finished running (' + elapsed + ' sec.)');
