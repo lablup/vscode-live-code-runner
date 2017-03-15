@@ -16,8 +16,8 @@ export default class SornaAPILib {
     this._accessKey = null;
     this._secretKey = null;
     this.signKey = null;
-    this.apiVersionMajor = 'v1';
-    this.apiVersion = 'v1.20160915';
+    this.apiVersionMajor = 'v2';
+    this.apiVersion = 'v2.20170315';
     this.hash_type = 'sha256';
     this.baseURL = 'https://api.sorna.io';
     this.endpoint = 'api.sorna.io';
@@ -80,12 +80,12 @@ export default class SornaAPILib {
         "timeout": 0
       }
     };
-    let requestInfo = this.newRequest('POST', '/v1/kernel/create', requestBody);
+    let requestInfo = this.newRequest('POST', '/v2/kernel/create', requestBody);
     return fetch(this.baseURL + '/' + this.apiVersionMajor + '/kernel/create', requestInfo);
   }
 
   destroyKernel(kernelId) {
-    let requestInfo = this.newRequest('DELETE', `/v1/kernel/${kernelId}`, null);
+    let requestInfo = this.newRequest('DELETE', `/v2/kernel/${kernelId}`, null);
     return fetch(this.baseURL + '/' + this.apiVersionMajor + '/kernel/'+kernelId, requestInfo);
   }
 
@@ -126,10 +126,10 @@ export default class SornaAPILib {
 
   runCode(code, kernelId) {
     let requestBody = {
-      "codeId": crypto.createHash('md5').update(code).digest("hex"),
+      "mode": "query",
       "code": code
     };
-    let requestInfo = this.newRequest('POST', `/v1/kernel/${kernelId}`, requestBody);
+    let requestInfo = this.newRequest('POST', `/v2/kernel/${kernelId}`, requestBody);
     return fetch(this.baseURL + '/' + this.apiVersionMajor + '/kernel/' + kernelId, requestInfo);
   }
 

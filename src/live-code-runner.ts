@@ -277,8 +277,6 @@ export class LiveCodeRunner {
                         if (json.result.status) {
                             if (json.result.status == "continued") {
                                 this.continuation = true;
-                                msg = "live-code-runner: runtime temporally stopped. Click to continue.";
-                                notification = vscode.window.showInformationMessage(msg, 'Continue');
                             } else if (json.result.status == "waiting-input") {
                                 this.continuation = true;
                                 this.waiting_input = true;
