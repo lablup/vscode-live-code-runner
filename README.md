@@ -27,10 +27,10 @@ Run codes in Visual Studio Code via Sorna Cloud API server (https://cloud.sorna.
 
  * Python 2.7
  * Python 3.6
- * TensorFlow 0.12
+ * TensorFlow 1.0
  * Theano 0.8
  * Keras 1.2
- * PHP 7
+ * PHP 7.0
  * Javascript (via V8 engine)
  * Node.js 4
  * R 3
