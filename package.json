@@ -37,7 +37,7 @@
         "commands": [
             {
                 "command": "live-code-runner.runCode",
-                "title": "Run Code On Sorna Cloud"
+                "title": "Run Code On Lablup.AI Cloud"
             }
         ],
         "keybindings": [
