@@ -1,14 +1,14 @@
 # live-code-runner
 
-Run codes in Visual Studio Code via Lablup.AI Cloud API server (https://cloud.sorna.io). You can run your code (or code snippet) without installing or setting any programming environment with this extension.
+Run codes in Visual Studio Code via Lablup.AI Cloud API server (https://cloud.backend.ai). You can run your code (or code snippet) without installing or setting any programming environment with this extension.
 
- `live-code-runner` is Visual Studio Code editor extension to add remote code execution feature using [Lablup.AI API Service](https://cloud.sorna.io). `live-code-runner` uses [Lablup.AI framework](http://sorna.io) and [Lablup.AI API](http://docs.sorna.io). Currently, Lablup.AI supports 11 programming languages now.
+ `live-code-runner` is Visual Studio Code editor extension to add remote code execution feature using [Lablup.AI API Service](https://cloud.backend.ai). `live-code-runner` uses [Lablup.AI framework](http://backend.ai) and [Lablup.AI API](http://docs.backend.ai). Currently, Lablup.AI supports 11 programming languages now.
 
 ## How-to
 
 ### API Key registration
 
- 1. Get your own API key pair (API key / Secret key) at [Lablup.AI Cloud Service](https://cloud.sorna.io)
+ 1. Get your own API key pair (API key / Secret key) at [Lablup.AI Cloud Service](https://cloud.backend.ai)
  2. Type your API key pair on preferences page (Code - Preferences - Settings - 'live-code-runner')
 
 ### Run
@@ -27,9 +27,9 @@ Run codes in Visual Studio Code via Lablup.AI Cloud API server (https://cloud.so
 
  * Python 2.7
  * Python 3.6
- * TensorFlow 1.1
+ * TensorFlow 1.3
  * Theano 0.8
- * Keras 1.2
+ * Keras 2.0
  * PHP 7.0
  * Javascript (via V8 engine)
  * Node.js 4
@@ -50,8 +50,8 @@ Run codes in Visual Studio Code via Lablup.AI Cloud API server (https://cloud.so
 
 This extension contributes the following settings:
 
-* `live-code-runner.accessKey`: set your access key created at https://cloud.sorna.io .
-* `live-code-runner.secretKey`: set your secret key created at https://cloud.sorna.io .
+* `live-code-runner.accessKey`: set your access key created at https://cloud.backend.ai .
+* `live-code-runner.secretKey`: set your secret key created at https://cloud.backend.ai .
 
 ## Known Issues
 
