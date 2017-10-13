@@ -3,7 +3,10 @@ All notable changes to the "live-code-runner" extension will be documented in th
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [Unreleased]
+## [1.2.0] - 2017-10-13
+ - Change runtime backend to Backend.AI
+
+## [1.1.0] - 2017-3-19
  - Inline I/O support
 
 ## [1.0.0] - 2017-02-28
