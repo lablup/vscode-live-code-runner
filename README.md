@@ -1,22 +1,22 @@
 # live-code-runner
 
-Run codes in Visual Studio Code via Lablup.AI Cloud API server (https://cloud.backend.ai). You can run your code (or code snippet) without installing or setting any programming environment with this extension.
+Run codes in Visual Studio Code via Backend.AI Cloud server (https://cloud.backend.ai). You can run your code (or code snippet) without installing or setting any programming environment with this extension.
 
- `live-code-runner` is Visual Studio Code editor extension to add remote code execution feature using [Lablup.AI API Service](https://cloud.backend.ai). `live-code-runner` uses [Lablup.AI framework](http://backend.ai) and [Lablup.AI API](http://docs.backend.ai). Currently, Lablup.AI supports 11 programming languages now.
+ `live-code-runner` is Visual Studio Code editor extension to add remote code execution feature using [Backend.AI Cloud Service](https://cloud.backend.ai). `live-code-runner` uses [Backend.AI framework](https://www.lablup.ai/#/ground) and [Backend.AI API](http://docs.backend.ai). Currently, Backend.AI supports 15 programming languages now.
 
 ## How-to
 
 ### API Key registration
 
- 1. Get your own API key pair (API key / Secret key) at [Lablup.AI Cloud Service](https://cloud.backend.ai)
+ 1. Get your own API key pair (API key / Secret key) at [Backend.AI Cloud Service](https://cloud.backend.ai)
  2. Type your API key pair on preferences page (Code - Preferences - Settings - 'live-code-runner')
 
 ### Run
 
  1. Write your code on editor.
  2. Run code by
-  * Choose `Run code on Lablup.AI` at context menu OR
-  * Type sorna and choose `Run code on Lablup.AI` at command palette.
+  * Choose `Run code on Backend.AI Cloud` at context menu OR
+  * Type sorna and choose `Run code on Backend.AI Cloud` at command palette.
  3. Execution result will be shown at bottom pane. If there are interactive media outputs, right pane also will appear.
 
 <iframe width="853" height="480" src="https://www.youtube.com/embed/IVX1SClEaMY" frameborder="0" allowfullscreen></iframe>
@@ -30,6 +30,7 @@ Run codes in Visual Studio Code via Lablup.AI Cloud API server (https://cloud.ba
  * TensorFlow 1.3
  * Theano 0.8
  * Keras 2.0
+ * C / C++ (via gcc)
  * PHP 7.0
  * Javascript (via V8 engine)
  * Node.js 4
@@ -44,7 +45,6 @@ Run codes in Visual Studio Code via Lablup.AI Cloud API server (https://cloud.ba
  * Rust
  * Swift (via Swift opensource version)
  * Caffe
- * C++ (via gcc)
 
 ## Extension Settings
 

@@ -1,7 +1,7 @@
 {
     "name": "live-code-runner",
     "displayName": "Live Code Runner",
-    "description": "Run your codes via Sorna Cloud API server (https://cloud.sorna.io)",
+    "description": "Run your codes via Backend.AI Cloud (https://cloud.backend.ai)",
     "version": "1.2.0",
     "icon": "images/live-code-runner-logo.png",
     "publisher": "lablup",
@@ -37,7 +37,7 @@
         "commands": [
             {
                 "command": "live-code-runner.runCode",
-                "title": "Run Code On Lablup.AI Cloud"
+                "title": "Run Code On Backend.AI Cloud"
             }
         ],
         "keybindings": [
@@ -77,12 +77,12 @@
                 "live-code-runner.accessKey": {
                     "type": "string",
                     "default": "",
-                    "description": "Access API key generated at cloud.sorna.io."
+                    "description": "Access API key generated at cloud.backend.ai."
                 },
                 "live-code-runner.secretKey": {
                     "type": "string",
                     "default": "",
-                    "description": "Secret API key generated at cloud.sorna.io."
+                    "description": "Secret API key generated at cloud.backend.ai."
                 }
             }
         }

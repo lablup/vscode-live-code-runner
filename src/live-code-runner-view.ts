@@ -14,7 +14,7 @@ export class LiveCodeRunnerView {
     private registration;
     private previewUri;
     constructor(){
-        this.console_log = vscode.window.createOutputChannel("Sorna");
+        this.console_log = vscode.window.createOutputChannel("Backend.AI");
         this.provider = new SornaCodeRunnerInteractiveView();
         this.registration = vscode.workspace.registerTextDocumentContentProvider('code-runner-view', this.provider);
         this.previewUri = vscode.Uri.parse('code-runner-view://authority/code-runner-view');
