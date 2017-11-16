@@ -16,7 +16,7 @@ Run codes in Visual Studio Code via Backend.AI Cloud server (https://cloud.backe
  1. Write your code on editor.
  2. Run code by
   * Choose `Run code on Backend.AI Cloud` at context menu OR
-  * Type sorna and choose `Run code on Backend.AI Cloud` at command palette.
+  * Type `backend` and choose `Run code on Backend.AI Cloud` at command palette.
  3. Execution result will be shown at bottom pane. If there are interactive media outputs, right pane also will appear.
 
 <iframe width="853" height="480" src="https://www.youtube.com/embed/IVX1SClEaMY" frameborder="0" allowfullscreen></iframe>
@@ -25,26 +25,32 @@ Run codes in Visual Studio Code via Backend.AI Cloud server (https://cloud.backe
 
 ### Supported Languages / frameworks on Lablup.AI Cloud
 
- * Python 2.7
- * Python 3.6
- * TensorFlow 1.3
- * Theano 0.8
- * Keras 2.0
- * C / C++ (via gcc)
- * PHP 7.0
- * Javascript (via V8 engine)
- * Node.js 4
- * R 3
- * Octave 4.2
- * Julia
- * haskell
- * Lua 5
+| Language      | Version | Batch | Query | Input Hook | TTY | ETC |
+|---------------|------|---|---|---|---|-------------------|
+| C             | 6.3  | O | O | O |   | GCC compiler      |
+| C++ (C+14)    | 6.3  | O | O | O |   | GCC compiler      |
+| Go            | 1.9  | O | O |   |   |                   | 
+| Haskell       | 8.2  | O | O |   |   |                   |
+| Java          | 8.0  | O | O |   |   |                   |
+| Linux Console | -    |   | O | O | O | Not supported in this plugin (Soon!) |  
+| Node.js       | 6    |   | O |   |   |                   |
+| Octave        | 4.2  |   | O |   |   |                   |
+| Python        | 2.7  | O | O | O |   |                   |
+| Python        | 3.6  | O | O | O |   |                   | 
+| Rust          | 1.21 | O | O |   |   |                   | 
+| PHP           | 7.0  |   | O |   |   |                   |
+| R             | 3.0  |   | O |   |   | CRAN R            |
+
+| Deep-Learning Framework | Version | Batch | Query | Input Hook | TTY | ETC |
+|---------------|------|---|---|---|---|-------------------|
+| TensorFlow    | 1.4  | O | O | O |   | Bundled w/Keras 2 |
+| PyTorch       | 0.2  | O | O | O |   |                   |
+| Theano        | 0.9  | O | O | O |   | Bundled w/Keras 2 |
+| CNTK          |(WIP) | O | O | O |   | Bundled w/Keras 2 |
 
 ### Languages (to be ready soon)
 
- * Rust
  * Swift (via Swift opensource version)
- * Caffe
 
 ## Extension Settings
 

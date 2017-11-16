@@ -74,7 +74,7 @@ export default class SornaAPILib {
   createKernel(kernelType) {
     let requestBody = {
       "lang": kernelType,
-      "clientSessionToken": "sorna-live-code-runner",
+      "clientSessionToken": "backend-ai-live-code-runner",
       "resourceLimits": {
         "maxMem": 0,
         "timeout": 0
@@ -124,10 +124,11 @@ export default class SornaAPILib {
     return requestInfo;
   }
 
-  runCode(code, kernelId) {
+  runCode(code, kernelId, runId) {
     let requestBody = {
       "mode": "query",
-      "code": code
+      "code": code,
+      "runId": runId
     };
     let requestInfo = this.newRequest('POST', `/v2/kernel/${kernelId}`, requestBody);
     return fetch(this.baseURL + '/' + this.apiVersionMajor + '/kernel/' + kernelId, requestInfo);

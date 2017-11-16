@@ -7,7 +7,7 @@ Licensed under MIT
 /*jshint esnext: true */
 
 import * as vscode from 'vscode';
-import * as Sorna from './sorna-api-lib-v2';
+import * as Sorna from './backend-ai-api-v3';
 import { LiveCodeRunnerView } from './live-code-runner-view';
 
 export class LiveCodeRunner {
@@ -15,6 +15,7 @@ export class LiveCodeRunner {
     private code: string;
     public accessKey: string;
     public secretKey: string;
+    private runId: string;
     private signKey: string;
     private apiVersion: 'v1.20160915';
     private hash_type = 'sha256';
@@ -34,6 +35,7 @@ export class LiveCodeRunner {
         this.code = null;
         this.accessKey = null;
         this.secretKey = null;
+        this.runId = null;
         this.signKey = null;
         this.kernelId = null;
         this.kernelType = null;
@@ -102,6 +104,7 @@ export class LiveCodeRunner {
                 .then( result => {
                     if (result === true) {
                         this.kernelType = kernelType;
+                        this.runId = this.generateRunId();
                         return this.sendCode();
                     }
                 });
@@ -258,7 +261,7 @@ export class LiveCodeRunner {
             this.code = editor.document.getText();
             this._exec_starts = new Date().getTime();
         }
-        return this.SornaAPILib.runCode(this.code, this.kernelId)
+        return this.SornaAPILib.runCode(this.code, this.kernelId, this.runId)
             .then( response => {
                 if (response.ok === false) {
                     errorMsg = `live-code-runner: ${response.statusText}`;
@@ -336,6 +339,13 @@ export class LiveCodeRunner {
         return text.replace(/[\"&<>]/g, function (a) {
         return { '"': '&quot;', '&': '&amp;', '<': '&lt;', '>': '&gt;' }[a];
         });
+    }
+    generateRunId() {
+        var text = "";
+        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        for (var i = 0; i < 8; i++)
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
+        return text;
     }
 }
 
