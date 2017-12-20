@@ -10,7 +10,7 @@ Licensed under MIT
 import fetch, {Headers} from 'node-fetch';
 var crypto = require('crypto');
 
-export default class SornaAPILib {
+export default class BackendAISDK {
   constructor() {
     this.code = null;
     this._accessKey = null;
@@ -159,5 +159,6 @@ export default class SornaAPILib {
     return k2;
   }
 }
-
-module.exports.SornaAPILib = SornaAPILib;
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports.BackendAISDK = BackendAISDK;
+}

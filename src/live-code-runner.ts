@@ -7,7 +7,7 @@ Licensed under MIT
 /*jshint esnext: true */
 
 import * as vscode from 'vscode';
-import * as Sorna from './backend-ai-api-v3';
+import * as BackendAI from './backend-ai-api-v3';
 import { LiveCodeRunnerView } from './live-code-runner-view';
 
 export class LiveCodeRunner {
@@ -17,12 +17,12 @@ export class LiveCodeRunner {
     public secretKey: string;
     private runId: string;
     private signKey: string;
-    private apiVersion: 'v1.20160915';
+    private apiVersion: 'v2.20160915';
     private hash_type = 'sha256';
     private baseURL = 'https://api.backend.ai';
     private kernelId: string;
     private kernelType: string;
-    private SornaAPILib;
+    private BackendAISDK;
     private LiveCodeRunnerView;
     private _exec_starts: number;
     private _config: vscode.WorkspaceConfiguration;
@@ -40,7 +40,7 @@ export class LiveCodeRunner {
         this.kernelId = null;
         this.kernelType = null;
         this.LiveCodeRunnerView = new LiveCodeRunnerView();
-        this.SornaAPILib = new Sorna.SornaAPILib();
+        this.BackendAISDK = new BackendAI.BackendAISDK();
         this.continuation = false;
         this.waiting_input = false;
     }
@@ -80,8 +80,8 @@ export class LiveCodeRunner {
 
     runcode() {
         this._config = vscode.workspace.getConfiguration('live-code-runner');
-        this.SornaAPILib.accessKey = this.getAccessKey();
-        this.SornaAPILib.secretKey = this.getSecretKey();
+        this.BackendAISDK.accessKey = this.getAccessKey();
+        this.BackendAISDK.secretKey = this.getSecretKey();
         this.LiveCodeRunnerView.clearConsole();
         let errorMsg, notification;
         let kernelType = this.chooseKernelType();
@@ -129,7 +129,7 @@ export class LiveCodeRunner {
     }
 
     getAPIversion() {
-        return this.SornaAPILib.getAPIversion();
+        return this.BackendAISDK.getAPIversion();
     }
 
     createKernel(kernelType) {
@@ -139,7 +139,7 @@ export class LiveCodeRunner {
         let msg = "Preparing kernel...";
         this.LiveCodeRunnerView.addConsoleMessage(msg);
         vscode.window.setStatusBarMessage(msg, 500);
-        return this.SornaAPILib.createKernel(kernelType)
+        return this.BackendAISDK.createKernel(kernelType)
         .then( function(response) {
             let notification;
             if (response.ok === false) {
@@ -166,7 +166,7 @@ export class LiveCodeRunner {
         let msg = "Destroying kernel...";
         this.LiveCodeRunnerView.addConsoleMessage(msg);
         vscode.window.setStatusBarMessage(msg, 500);
-        return this.SornaAPILib.destroyKernel(kernelId)
+        return this.BackendAISDK.destroyKernel(kernelId)
             .then( function(response) {
                 if (response.ok === false) {
                     if (response.status !== 404) {
@@ -187,7 +187,7 @@ export class LiveCodeRunner {
         let msg = "Refreshing kernel...";
         this.LiveCodeRunnerView.addConsoleMessage(msg);
         vscode.window.setStatusBarMessage(msg);
-        return this.SornaAPILib.refreshKernel(this.kernelId)
+        return this.BackendAISDK.refreshKernel(this.kernelId)
             .then( function(response) {
                 let notification;
                 if (response.ok === false) {
@@ -265,7 +265,7 @@ export class LiveCodeRunner {
             this.code = editor.document.getText();
             this._exec_starts = new Date().getTime();
         }
-        return this.SornaAPILib.runCode(this.code, this.kernelId, this.runId, mode)
+        return this.BackendAISDK.runCode(this.code, this.kernelId, this.runId, mode)
             .then( response => {
                 if (response.ok === false) {
                     errorMsg = `live-code-runner: ${response.statusText}`;
