@@ -219,25 +219,25 @@ export class LiveCodeRunner {
             switch (grammarName) {
                 case "python":
                 let code = editor.document.getText();
-                if (code.search("tensorflow") > 0) {
-                    kernelName = "tensorflow-python3-gpu";
-                } else if (code.search("keras") > 0) {
-                    kernelName = "tensorflow-python3-gpu";
-                } else if (code.search("theano") > 0) {
-                    kernelName = "python3-theano";
-                } else if (code.search("caffe") > 0) {
-                    kernelName = "python3-caffe";
+                if (code.search("import tensorflow") > 0) {
+                    kernelName = "python-tensorflow:latest-gpu";
+                } else if (code.search("import keras") > 0) {
+                    kernelName = "python-tensorflow:latest-gpu";
+                } else if (code.search("import theano") > 0) {
+                    kernelName = "python-theano:latest";
+                } else if (code.search("import caffe") > 0) {
+                    kernelName = "python-caffe:latest";
                 } else {
-                    kernelName = "python3";
+                    kernelName = "python:latest";
                 }
                 break;
-                case "r": kernelName = "r3"; break;
-                case "julia": kernelName = "julia"; break;
-                case "lua": kernelName = "lua5"; break;
-                case "php": kernelName = "php7"; break;
-                case "haskell": kernelName = "haskell"; break;
-                case "matlab": case "octave": kernelName = "octave4"; break;
-                case "nodejs": case "javascript": kernelName = "nodejs4"; break;
+                case "r": kernelName = "r:latest"; break;
+                case "julia": kernelName = "julia:latest"; break;
+                case "lua": kernelName = "lua:latest"; break;
+                case "php": kernelName = "php:latest"; break;
+                case "haskell": kernelName = "haskell:latest"; break;
+                case "matlab": case "octave": kernelName = "octave:latest"; break;
+                case "nodejs": case "javascript": kernelName = "nodejs:latest"; break;
                 default: kernelName = null;
             }
             console.log(`Kernel Language: ${kernelName}`);
