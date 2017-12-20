@@ -1,9 +1,9 @@
 'use babel';
 /*
-Sorna Cloud Javascript API Library (v2)
-=======================================
+Backend.AI Cloud Javascript API Library (v2.9)
+==============================================
 
-(C) Copyright 2016-2017 Lablup Inc.
+(C) Copyright 2016-2018 Lablup Inc.
 Licensed under MIT
 */
 /*jshint esnext: true */
@@ -19,8 +19,8 @@ export default class SornaAPILib {
     this.apiVersionMajor = 'v2';
     this.apiVersion = 'v2.20170315';
     this.hash_type = 'sha256';
-    this.baseURL = 'https://api.sorna.io';
-    this.endpoint = 'api.sorna.io';
+    this.baseURL = 'https://api.backend.ai';
+    this.endpoint = 'api.backend.ai';
     this.kernelId = null;
     this.kernelType = null;
   }

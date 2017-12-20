@@ -19,7 +19,7 @@ export class LiveCodeRunner {
     private signKey: string;
     private apiVersion: 'v1.20160915';
     private hash_type = 'sha256';
-    private baseURL = 'https://api.sorna.io';
+    private baseURL = 'https://api.backend.ai';
     private kernelId: string;
     private kernelType: string;
     private SornaAPILib;
@@ -113,6 +113,7 @@ export class LiveCodeRunner {
                 let createAndRun = this.createKernel(kernelType).then( (result) => {
                     if (result === true) {
                         this.kernelType = kernelType;
+                        this.runId = this.generateRunId();
                         return this.sendCode();
                     } else {
                         console.log("[ERROR] Tried to spawn kernel but error found.");
