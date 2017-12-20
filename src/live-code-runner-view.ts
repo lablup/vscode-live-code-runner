@@ -80,24 +80,30 @@ export class SornaCodeRunnerInteractiveView implements vscode.TextDocumentConten
         return true;
     }
     public clearContent(): boolean {
-        this._content = `<style>* {font-family:monospace;} 
-            .live-code-runner-error-message {
+        this._content = `<style>
+            .live-console {
+                font-family: monospace;
+                white-space: pre;
+            }
+            .stderr {
                 color: #ff2222;
             }
-            pre { margin:0;padding:0;}
-            </style>`;
+        </style>`;
         return true;
     }
     private createView(): string {
         if (this._content === undefined) {
             this._content = '';
         }
-        return `<style>* {font-family:monospace;}
-            .live-code-runner-error-message {
+        return `<style>
+            .live-console {
+                font-family: monospace;
+                white-space: pre;
+            }
+            .stderr {
                 color: #ff2222;
             }
-            pre { margin:0;padding:0;}
-            </style>` + this._content;
+        </style>` + this._content;
     }
 }
 

@@ -255,6 +255,7 @@ export class LiveCodeRunner {
             console.log("Sending input...");
             mode = "input";
             this.waiting_input = false;
+            this.LiveCodeRunnerView.addHtmlContent(`<span class="live-console stdout">${this.escapeHtml(this.code + '\n')}</span>`);
         } else if (this.continuation === true) {
             this.code = '';
             mode = "continue";
@@ -269,73 +270,71 @@ export class LiveCodeRunner {
         return this.BackendAISDK.runCode(this.code, this.kernelId, this.runId, mode)
             .then( response => {
                 if (response.ok === false) {
-                    errorMsg = `live-code-runner: ${response.statusText}`;
-                    notification = vscode.window.showErrorMessage(errorMsg);
-                    if (response.status === 404) {
-                        this.createKernel(this.kernelType);
-                    }
+                    response.json().then(json => {
+                        errorMsg = `live-code-runner: ${response.statusText}: ${json['title']}`;
+                        notification = vscode.window.showErrorMessage(errorMsg);
+                    })
                     this.continuation = false;
-                } else {
-                    response.json().then( json => {
-                        let buffer = '';
-                        let htmlOutput = '';
-                        if (json.result.status) {
-                            if (json.result.status == "continued") {
-                                this.continuation = true;
-                                msg = "live-code-runner: executing...";
-                                vscode.window.setStatusBarMessage(msg, 2000);
-                                setTimeout(() => this.sendCode(), 1);
-                            } else if (json.result.status == "waiting-input") {
-                                this.continuation = true;
-                                this.waiting_input = true;
-                            } else {
-                                this.continuation = false;
-                                this.waiting_input = false;
-                            }
+                    return true;
+                }
+                response.json().then( json => {
+                    let buffer = '';
+                    let htmlOutput = '';
+                    if (json.result.status) {
+                        if (json.result.status == "continued") {
+                            this.continuation = true;
+                            msg = "live-code-runner: executing...";
+                            vscode.window.setStatusBarMessage(msg, 2000);
+                            setTimeout(() => this.sendCode(), 1);
+                        } else if (json.result.status == "waiting-input") {
+                            this.continuation = true;
+                            this.waiting_input = true;
+                        } else {
+                            this.continuation = false;
+                            this.waiting_input = false;
                         }
-                        if (json.result.console) {
-                            for (let c of Array.from(json.result.console)) {
-                                if (c[0] == 'stdout') {
-                                htmlOutput = htmlOutput  + '<pre>'+this.escapeHtml(c[1])+'</pre>';
-                                }
-                                if (c[0] == 'stderr') {
-                                htmlOutput = htmlOutput  + '<pre class="live-code-runner-error-message">'+this.escapeHtml(c[1])+'</pre>';
-                                }
-                                if (c[0] == 'media') {
+                    }
+                    if (json.result.console) {
+                        for (let c of Array.from(json.result.console)) {
+                            if (c[0] == 'stdout') {
+                                htmlOutput = htmlOutput  + '<span class="live-console stdout">'+this.escapeHtml(c[1])+'</span>';
+                            }
+                            if (c[0] == 'stderr') {
+                                htmlOutput = htmlOutput  + '<span class="live-console stderr">'+this.escapeHtml(c[1])+'</span>';
+                            }
+                            if (c[0] == 'media') {
                                 if (c[1][0] === "image/svg+xml") {
                                     htmlOutput = htmlOutput + c[1][1];
                                 }
-                                }
                             }
                         }
-                        if (htmlOutput != '') {
-                            this.LiveCodeRunnerView.addHtmlContent(htmlOutput);                        
-                            this.LiveCodeRunnerView.showResultPanel();
-                        }
-                        if (buffer != '') {
-                            this.LiveCodeRunnerView.addConsoleMessage(buffer);
-                        }
-                        if (json.result.status == "finished") {
-                            let elapsed = (new Date().getTime() - this._exec_starts) / 1000;
-                            vscode.window.setStatusBarMessage('live-code-runner: finished running (' + elapsed + ' sec.)');
-                            msg = `[LOG] Finished. (${elapsed} sec.)`;
-                            this.LiveCodeRunnerView.addConsoleMessage(msg);
-                        }
-                        if (this.waiting_input === true) {
-                            return vscode.window.showInputBox({ignoreFocusOut:true, placeHolder:"Input to kernel"}).then( response => {
-                                if (response === undefined) {
-                                    this.code = '';
-                                } else {
-                                    this.code = response;
-                                }
-                                return this.sendCode();
-                            });
-                        } else {
-                            return true;
-                        }
                     }
-                );
-                }
+                    if (htmlOutput != '') {
+                        this.LiveCodeRunnerView.addHtmlContent(htmlOutput);
+                        this.LiveCodeRunnerView.showResultPanel();
+                    }
+                    if (buffer != '') {
+                        this.LiveCodeRunnerView.addConsoleMessage(buffer);
+                    }
+                    if (json.result.status == "finished") {
+                        let elapsed = (new Date().getTime() - this._exec_starts) / 1000;
+                        vscode.window.setStatusBarMessage('live-code-runner: finished running (' + elapsed + ' sec.)');
+                        msg = `[LOG] Finished. (${elapsed} sec.)`;
+                        this.LiveCodeRunnerView.addConsoleMessage(msg);
+                    }
+                    if (this.waiting_input === true) {
+                        return vscode.window.showInputBox({ignoreFocusOut:true, placeHolder:"Input to kernel"}).then( response => {
+                            if (response === undefined) {
+                                this.code = '';
+                            } else {
+                                this.code = response;
+                            }
+                            return this.sendCode();
+                        });
+                    } else {
+                        return true;
+                    }
+                });
                 return true;
             }
         );
