@@ -124,9 +124,9 @@ export default class SornaAPILib {
     return requestInfo;
   }
 
-  runCode(code, kernelId, runId) {
+  runCode(code, kernelId, runId, mode) {
     let requestBody = {
-      "mode": "query",
+      "mode": mode,
       "code": code,
       "runId": runId
     };

@@ -250,10 +250,13 @@ export class LiveCodeRunner {
 
         this.LiveCodeRunnerView.showConsole();
         let msg = "[LOG] Running...";
+        let mode = "query";
         if (this.waiting_input === true) {
             console.log("Waiting input...");
+            mode = "input";
         } else if (this.continuation === true) {
             this.code = '';
+            mode = "continue";
         } else {
             this.LiveCodeRunnerView.clearConsole();
             this.LiveCodeRunnerView.clearHtmlContent();
@@ -262,7 +265,7 @@ export class LiveCodeRunner {
             this.code = editor.document.getText();
             this._exec_starts = new Date().getTime();
         }
-        return this.SornaAPILib.runCode(this.code, this.kernelId, this.runId)
+        return this.SornaAPILib.runCode(this.code, this.kernelId, this.runId, mode)
             .then( response => {
                 if (response.ok === false) {
                     errorMsg = `live-code-runner: ${response.statusText}`;
