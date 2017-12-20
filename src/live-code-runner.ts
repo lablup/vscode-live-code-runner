@@ -246,10 +246,7 @@ export class LiveCodeRunner {
     }
 
     sendCode() {
-        let errorMsg, notification;
-
         this.LiveCodeRunnerView.showConsole();
-        let msg = "[LOG] Running...";
         let mode = "query";
         if (this.waiting_input === true) {
             console.log("Sending input...");
@@ -262,7 +259,7 @@ export class LiveCodeRunner {
         } else {
             this.LiveCodeRunnerView.clearConsole();
             this.LiveCodeRunnerView.clearHtmlContent();
-            this.LiveCodeRunnerView.addConsoleMessage(msg);
+            this.LiveCodeRunnerView.addConsoleMessage('[LOG] Running...');
             let editor = vscode.window.activeTextEditor;
             this.code = editor.document.getText();
             this._exec_starts = new Date().getTime();
@@ -271,8 +268,8 @@ export class LiveCodeRunner {
             .then( response => {
                 if (response.ok === false) {
                     response.json().then(json => {
-                        errorMsg = `live-code-runner: ${response.statusText}: ${json['title']}`;
-                        notification = vscode.window.showErrorMessage(errorMsg);
+                        let errorMsg = `live-code-runner: ${response.statusText}: ${json['title']}`;
+                        vscode.window.showErrorMessage(errorMsg);
                     })
                     this.continuation = false;
                     return true;
@@ -283,7 +280,7 @@ export class LiveCodeRunner {
                     if (json.result.status) {
                         if (json.result.status == "continued") {
                             this.continuation = true;
-                            msg = "live-code-runner: executing...";
+                            let msg = "live-code-runner: executing...";
                             vscode.window.setStatusBarMessage(msg, 2000);
                             setTimeout(() => this.sendCode(), 1);
                         } else if (json.result.status == "waiting-input") {
@@ -297,10 +294,10 @@ export class LiveCodeRunner {
                     if (json.result.console) {
                         for (let c of Array.from(json.result.console)) {
                             if (c[0] == 'stdout') {
-                                htmlOutput = htmlOutput  + '<span class="live-console stdout">'+this.escapeHtml(c[1])+'</span>';
+                                htmlOutput = htmlOutput  + `<span class="live-console stdout">${this.escapeHtml(c[1])}</span>`;
                             }
                             if (c[0] == 'stderr') {
-                                htmlOutput = htmlOutput  + '<span class="live-console stderr">'+this.escapeHtml(c[1])+'</span>';
+                                htmlOutput = htmlOutput  + `<span class="live-console stderr">${this.escapeHtml(c[1])}</span>`;
                             }
                             if (c[0] == 'media') {
                                 if (c[1][0] === "image/svg+xml") {
@@ -318,12 +315,15 @@ export class LiveCodeRunner {
                     }
                     if (json.result.status == "finished") {
                         let elapsed = (new Date().getTime() - this._exec_starts) / 1000;
-                        vscode.window.setStatusBarMessage('live-code-runner: finished running (' + elapsed + ' sec.)');
-                        msg = `[LOG] Finished. (${elapsed} sec.)`;
+                        vscode.window.setStatusBarMessage(`live-code-runner: finished running (${elapsed} sec.)`);
+                        let msg = `[LOG] Finished. (${elapsed} sec.)`;
                         this.LiveCodeRunnerView.addConsoleMessage(msg);
                     }
                     if (this.waiting_input === true) {
-                        return vscode.window.showInputBox({ignoreFocusOut:true, placeHolder:"Input to kernel"}).then( response => {
+                        return vscode.window.showInputBox({
+                            ignoreFocusOut: true,
+                            placeHolder: "Input to kernel",
+                        }).then( response => {
                             if (response === undefined) {
                                 this.code = '';
                             } else {
