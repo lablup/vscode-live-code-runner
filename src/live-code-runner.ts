@@ -252,8 +252,9 @@ export class LiveCodeRunner {
         let msg = "[LOG] Running...";
         let mode = "query";
         if (this.waiting_input === true) {
-            console.log("Waiting input...");
+            console.log("Sending input...");
             mode = "input";
+            this.waiting_input = false;
         } else if (this.continuation === true) {
             this.code = '';
             mode = "continue";
