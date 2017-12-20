@@ -2,7 +2,7 @@
     "name": "live-code-runner",
     "displayName": "Live Code Runner",
     "description": "Run your codes via Backend.AI Cloud (https://cloud.backend.ai)",
-    "version": "1.2.0",
+    "version": "2.0.0",
     "icon": "images/live-code-runner-logo.png",
     "publisher": "lablup",
     "license": "See LICENSE in LICENSE file",
