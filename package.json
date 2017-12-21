@@ -2,7 +2,7 @@
     "name": "live-code-runner",
     "displayName": "Live Code Runner",
     "description": "Run your codes via Backend.AI Cloud (https://cloud.backend.ai)",
-    "version": "2.0.0",
+    "version": "2.1.0",
     "icon": "images/live-code-runner-logo.png",
     "publisher": "lablup",
     "license": "See LICENSE in LICENSE file",
@@ -95,14 +95,12 @@
     },
     "dependencies": {
         "punycode": "^2.1.0",
-        "node-fetch": "^1.6.3"
+        "backend.ai-client": "^0.1.4"
     },
     "devDependencies": {
         "typescript": "^2.0.3",
         "vscode": "^1.0.0",
         "mocha": "^2.3.3",
-        "punycode": "^2.1.0",
-        "node-fetch": "^1.6.3",
         "@types/node": "^6.0.40",
         "@types/mocha": "^2.2.32"
     }

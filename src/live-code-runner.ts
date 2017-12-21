@@ -7,7 +7,7 @@ Licensed under MIT
 /*jshint esnext: true */
 
 import * as vscode from 'vscode';
-import * as BackendAI from './backend-ai-api-v3';
+import * as BackendAI from 'backend.ai-client';
 import { LiveCodeRunnerView } from './live-code-runner-view';
 
 export class LiveCodeRunner {
@@ -40,7 +40,7 @@ export class LiveCodeRunner {
         this.kernelId = null;
         this.kernelType = null;
         this.LiveCodeRunnerView = new LiveCodeRunnerView();
-        this.BackendAISDK = new BackendAI.BackendAISDK();
+        this.BackendAISDK = new BackendAI.BackendAIClient();
         this.continuation = false;
         this.waiting_input = false;
     }
