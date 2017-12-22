@@ -138,18 +138,19 @@ export class LiveCodeRunner {
         }
     }
 
-    getAPIversion() {
+    getServerVersion() {
         this.ensureClient();
-        return this.client.getAPIversion()
+        return this.client.getServerVersion()
         .then(response => {
             return response.version;
-        }).catch((errorType, errorMsg) => {
-            vscode.window.showErrorMessage(`live-code-runner: ${errorMsg}`);
+        }).catch(err => {
+            vscode.window.showErrorMessage(`live-code-runner: ${err.message}`);
             return false;
         });
     }
 
     createKernel(kernelType) {
+        this.ensureClient();
         this.continuation = false;
         this.waiting_input = false;
         let msg = "Preparing kernel...";
@@ -162,14 +163,15 @@ export class LiveCodeRunner {
             this.view.addConsoleMessage(msg);
             vscode.window.setStatusBarMessage(msg, 500);
             return true;
-        }).catch((errorType, errorMsg) => {
-            vscode.window.showErrorMessage(`live-code-runner: ${errorMsg}`);
-            vscode.window.setStatusBarMessage(errorMsg, 500);
+        }).catch(err => {
+            vscode.window.showErrorMessage(`live-code-runner: ${err.message}`);
+            vscode.window.setStatusBarMessage(err.message, 500);
             return false;
         });
     }
 
     destroyKernel(kernelId) {
+        this.ensureClient();
         this.continuation = false;
         this.waiting_input = false;
         let msg = "Destroying kernel...";
@@ -178,14 +180,15 @@ export class LiveCodeRunner {
         return this.client.destroyKernel(kernelId)
         .then(response => {
             return true;
-        }).catch((errorType, errorMsg) => {
-            vscode.window.showErrorMessage(`live-code-runner: ${errorMsg}`);
-            vscode.window.setStatusBarMessage(errorMsg, 500);
+        }).catch(err => {
+            vscode.window.showErrorMessage(`live-code-runner: ${err.message}`);
+            vscode.window.setStatusBarMessage(err.message, 500);
             return false;
         });
     }
 
     refreshKernel() {
+        this.ensureClient();
         this.continuation = false;
         this.waiting_input = false;
         let msg = "Refreshing kernel...";
@@ -197,14 +200,14 @@ export class LiveCodeRunner {
             vscode.window.showInformationMessage(msg);
             vscode.window.setStatusBarMessage(msg, 500);
             return true;
-        }).catch((errorType, errorMsg) => {
-            vscode.window.showErrorMessage(`live-code-runner: ${errorMsg}`);
-            vscode.window.setStatusBarMessage(errorMsg, 500);
+        }).catch(err => {
+            vscode.window.showErrorMessage(`live-code-runner: ${err.message}`);
+            vscode.window.setStatusBarMessage(err.message, 500);
             return false;
         });
     }
 
-    chooseKernelType() {
+    private chooseKernelType() {
         let grammar;
         let editor = vscode.window.activeTextEditor;
         if (editor) {
@@ -244,7 +247,7 @@ export class LiveCodeRunner {
         }
     }
 
-    sendCode() {
+    private sendCode() {
         this.view.showConsole();
         let mode = "query";
         if (this.waiting_input === true) {
@@ -317,9 +320,9 @@ export class LiveCodeRunner {
             } else {
                 return true;
             }
-        }).catch((errorType, errorMsg) => {
-            vscode.window.showErrorMessage(`live-code-runner: ${errorMsg}`);
-            switch (errorType) {
+        }).catch(err => {
+            vscode.window.showErrorMessage(`live-code-runner: ${err.message}`);
+            switch (err.type) {
             case ai.backend.Client.ERR_SERVER:
                 this.continuation = false;
                 break;
@@ -332,7 +335,7 @@ export class LiveCodeRunner {
         });
     }
 
-    generateRunId() {
+    private generateRunId() {
         var text = "";
         var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         for (var i = 0; i < 8; i++)
