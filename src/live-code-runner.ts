@@ -7,92 +7,102 @@ Licensed under MIT
 /*jshint esnext: true */
 
 import * as vscode from 'vscode';
-import * as BackendAI from 'backend.ai-client';
+import * as ai from 'backend.ai-client';
 import { LiveCodeRunnerView } from './live-code-runner-view';
 
 export class LiveCodeRunner {
     private resultPanel;
     private code: string;
-    public accessKey: string;
-    public secretKey: string;
     private runId: string;
     private signKey: string;
-    private apiVersion: 'v2.20160915';
-    private hash_type = 'sha256';
-    private baseURL = 'https://api.backend.ai';
     private kernelId: string;
     private kernelType: string;
-    private BackendAISDK;
-    private LiveCodeRunnerView;
+    private clientConfig: ai.backend.Config;
+    private client: ai.backend.Client;
+    private view: LiveCodeRunnerView;
     private _exec_starts: number;
     private _config: vscode.WorkspaceConfiguration;
     public continuation: boolean;
     public waiting_input: boolean;
 
-    //private _config;
     constructor() {
         this.resultPanel = null;
         this.code = null;
-        this.accessKey = null;
-        this.secretKey = null;
         this.runId = null;
         this.signKey = null;
         this.kernelId = null;
         this.kernelType = null;
-        this.LiveCodeRunnerView = new LiveCodeRunnerView();
-        this.BackendAISDK = new BackendAI.BackendAIClient();
+        // config is read at first execution
+        this.clientConfig = null;
+        this.client = null;
+        this.view = new LiveCodeRunnerView();
+        this._exec_starts = 0;
+        this._config = null;
         this.continuation = false;
         this.waiting_input = false;
     }
 
-    getAccessKey() {
-        let accessKey = this._config.get('accessKey');
-        return accessKey;
+    get accessKey(): string {
+        return this.clientConfig.accessKey;
     }
 
-    getSecretKey() {
-        let secretKey = this._config.get('secretKey');
-        return secretKey;
+    get secretKey(): string {
+        return this.clientConfig.secretKey;
+    }
+
+    get endpoint(): string {
+        return this.clientConfig.endpoint;
+    }
+
+    private ensureClient() {
+        if (this._config === null) {
+            this._config = vscode.workspace.getConfiguration('live-code-runner');
+            this.clientConfig = new ai.backend.ClientConfig(
+                this._config.get('accessKey'),
+                this._config.get('secretKey'),
+                this._config.get('endpoint'),
+            );
+            let pkgVersion = '2.1.0';  // TODO: read from package.json
+            this.client = new ai.backend.Client(
+                this.clientConfig,
+                `Live Code Runner ${pkgVersion}; VSCode ${vscode.version}`,
+            );
+        }
     }
 
     checkMandatorySettings() {
         let missingSettings = [];
-        if (this.getAccessKey() === undefined) {
-        missingSettings.push("Access Key");
+        if (this.accessKey === undefined) {
+            missingSettings.push("Access Key");
         }
-        if (this.getSecretKey() === undefined) {
-        missingSettings.push("Secret Key");
+        if (this.secretKey === undefined) {
+            missingSettings.push("Secret Key");
         }
         if (missingSettings.length) {
-        this.notifyMissingMandatorySettings(missingSettings);
+            this.notifyMissingMandatorySettings(missingSettings);
         }
         return missingSettings.length === 0;
     }
 
     notifyMissingMandatorySettings(missingSettings) {
-        let notification;
-        let context = this;
         let errorMsg = `live-code-runner: Please input following settings: ${missingSettings.join(', ')}`;
-
-        notification = vscode.window.showInformationMessage(errorMsg);
+        vscode.window.showInformationMessage(errorMsg);
         return true;
     }
 
     runcode() {
-        this._config = vscode.workspace.getConfiguration('live-code-runner');
-        this.BackendAISDK.accessKey = this.getAccessKey();
-        this.BackendAISDK.secretKey = this.getSecretKey();
-        this.LiveCodeRunnerView.clearConsole();
-        let errorMsg, notification;
+        this.ensureClient();
+        this.view.clearConsole();
         let kernelType = this.chooseKernelType();
         if (kernelType === null) {
-            errorMsg = "live-code-runner: language is not specified by Visual Studio Code.";
-            notification = vscode.window.showErrorMessage(errorMsg);
+            let errorMsg = "live-code-runner: Could not detect the code language.";
+            vscode.window.showErrorMessage(errorMsg);
             vscode.window.setStatusBarMessage(errorMsg, 1000);
             return false;
         }
         if ((kernelType !== this.kernelType) || (this.kernelId === null)) {
             if (this.kernelId !== null) {
+                console.log('runcode: destroyKernel');
                 let destroyAndCreateAndRun = this.destroyKernel(this.kernelId)
                 .then( result => {
                     if (result === true) {
@@ -119,7 +129,7 @@ export class LiveCodeRunner {
                         console.log("[ERROR] Tried to spawn kernel but error found.");
                     }
                 }).catch( e => {
-                    console.log("[ERROR] Kernel spawning failed.");
+                    console.log("[ERROR] Kernel creation request failed.", e);
                 });
                 return true;
             }
@@ -129,34 +139,33 @@ export class LiveCodeRunner {
     }
 
     getAPIversion() {
-        return this.BackendAISDK.getAPIversion();
+        this.ensureClient();
+        return this.client.getAPIversion()
+        .then(response => {
+            return response.version;
+        }).catch((errorType, errorMsg) => {
+            vscode.window.showErrorMessage(`live-code-runner: ${errorMsg}`);
+            return false;
+        });
     }
 
     createKernel(kernelType) {
         this.continuation = false;
         this.waiting_input = false;
-        let parentObj = this;
         let msg = "Preparing kernel...";
-        this.LiveCodeRunnerView.addConsoleMessage(msg);
+        this.view.addConsoleMessage(msg);
         vscode.window.setStatusBarMessage(msg, 500);
-        return this.BackendAISDK.createKernel(kernelType)
-        .then( function(response) {
-            let notification;
-            if (response.ok === false) {
-                let errorMsg = `live-code-runner: ${response.statusText}`;
-                notification = vscode.window.showErrorMessage(errorMsg);
-                return false;
-            } else if (response.status === 201) {
-                return response.json().then( function(json) {
-                    console.log(`Kernel ID: ${json.kernelId}`);
-                    parentObj.kernelId = json.kernelId;
-                    msg = "Kernel prepared.";
-                    parentObj.LiveCodeRunnerView.addConsoleMessage(msg);
-                    vscode.window.setStatusBarMessage(msg, 500);
-                    return true;
-                });
-            }
-        }).catch( e => {
+        return this.client.createKernel(kernelType)
+        .then(response => {
+            this.kernelId = response.kernelId;
+            let msg = "Kernel prepared.";
+            this.view.addConsoleMessage(msg);
+            vscode.window.setStatusBarMessage(msg, 500);
+            return true;
+        }).catch((errorType, errorMsg) => {
+            vscode.window.showErrorMessage(`live-code-runner: ${errorMsg}`);
+            vscode.window.setStatusBarMessage(errorMsg, 500);
+            return false;
         });
     }
 
@@ -164,45 +173,35 @@ export class LiveCodeRunner {
         this.continuation = false;
         this.waiting_input = false;
         let msg = "Destroying kernel...";
-        this.LiveCodeRunnerView.addConsoleMessage(msg);
+        this.view.addConsoleMessage(msg);
         vscode.window.setStatusBarMessage(msg, 500);
-        return this.BackendAISDK.destroyKernel(kernelId)
-            .then( function(response) {
-                if (response.ok === false) {
-                    if (response.status !== 404) {
-                        let errorMsg = `live-code-runner: kernel destroy failed - ${response.statusText}`;
-                        let notification = vscode.window.showErrorMessage(errorMsg);
-                        return false;
-                    } else {
-                        return true;
-                    }
-                }
-                return true;
-            }, e => false);
+        return this.client.destroyKernel(kernelId)
+        .then(response => {
+            return true;
+        }).catch((errorType, errorMsg) => {
+            vscode.window.showErrorMessage(`live-code-runner: ${errorMsg}`);
+            vscode.window.setStatusBarMessage(errorMsg, 500);
+            return false;
+        });
     }
 
     refreshKernel() {
         this.continuation = false;
         this.waiting_input = false;
         let msg = "Refreshing kernel...";
-        this.LiveCodeRunnerView.addConsoleMessage(msg);
+        this.view.addConsoleMessage(msg);
         vscode.window.setStatusBarMessage(msg);
-        return this.BackendAISDK.refreshKernel(this.kernelId)
-            .then( function(response) {
-                let notification;
-                if (response.ok === false) {
-                    let errorMsg = `live-code-runner: ${response.statusText}`;
-                    notification = vscode.window.showErrorMessage(errorMsg);
-                    vscode.window.setStatusBarMessage(msg, 500);
-                } else {
-                    if (response.status !== 404) {
-                        msg = "live-code-runner: kernel refreshed";
-                        notification = vscode.window.showInformationMessage(msg);
-                        vscode.window.setStatusBarMessage(msg, 500);
-                    }
-                }
-                return true;
-            }, e => false);
+        return this.client.refreshKernel(this.kernelId)
+        .then(response => {
+            let msg = "live-code-runner: kernel refreshed";
+            vscode.window.showInformationMessage(msg);
+            vscode.window.setStatusBarMessage(msg, 500);
+            return true;
+        }).catch((errorType, errorMsg) => {
+            vscode.window.showErrorMessage(`live-code-runner: ${errorMsg}`);
+            vscode.window.setStatusBarMessage(errorMsg, 500);
+            return false;
+        });
     }
 
     chooseKernelType() {
@@ -246,104 +245,93 @@ export class LiveCodeRunner {
     }
 
     sendCode() {
-        this.LiveCodeRunnerView.showConsole();
+        this.view.showConsole();
         let mode = "query";
         if (this.waiting_input === true) {
-            console.log("Sending input...");
             mode = "input";
             this.waiting_input = false;
-            this.LiveCodeRunnerView.addHtmlContent(`<span class="live-console stdout">${this.escapeHtml(this.code + '\n')}</span>`);
+            this.view.addOutput([['stdout', this.code + '\n']]);
         } else if (this.continuation === true) {
             this.code = '';
             mode = "continue";
         } else {
-            this.LiveCodeRunnerView.clearConsole();
-            this.LiveCodeRunnerView.clearHtmlContent();
-            this.LiveCodeRunnerView.addConsoleMessage('[LOG] Running...');
+            this.view.clearConsole();
+            this.view.clearHtmlContent();
+            this.view.addConsoleMessage('[LOG] Running...');
             let editor = vscode.window.activeTextEditor;
             this.code = editor.document.getText();
             this._exec_starts = new Date().getTime();
         }
-        return this.BackendAISDK.runCode(this.code, this.kernelId, this.runId, mode)
-            .then( response => {
-                if (response.ok === false) {
-                    response.json().then(json => {
-                        let errorMsg = `live-code-runner: ${response.statusText}: ${json['title']}`;
-                        vscode.window.showErrorMessage(errorMsg);
-                    })
-                    this.continuation = false;
-                    return true;
+        return this.client.runCode(this.code, this.kernelId, this.runId, mode)
+        .then(response => {
+            let hasOutput = false;
+            let msg = '';
+            // state machine
+            switch (response.result.status) {
+            case 'continued':
+                this.continuation = true;
+                this.waiting_input = false;
+                msg = "live-code-runner: executing...";
+                vscode.window.setStatusBarMessage(msg, 2000);
+                setTimeout(() => this.sendCode(), 1);
+                break;
+            case 'waiting-input':
+                this.continuation = true;
+                this.waiting_input = true;
+                break;
+            case 'build-finished':
+                this.continuation = true;
+                this.waiting_input = false;
+                break;
+            case 'finished':
+                this.continuation = false;
+                this.waiting_input = false;
+                let elapsed = (new Date().getTime() - this._exec_starts) / 1000;
+                vscode.window.setStatusBarMessage(`live-code-runner: finished running (${elapsed} sec.)`);
+                msg = `[LOG] Finished. (${elapsed} sec.)`;
+                this.view.addConsoleMessage(msg);
+                break;
+            default:
+                this.continuation = false;
+                this.waiting_input = false;
+            }
+            // handle results
+            if (response.result.console) {
+                hasOutput = this.view.addOutput(response.result.console);
+                if (hasOutput) {
+                    this.view.showResultPanel();
                 }
-                response.json().then( json => {
-                    let buffer = '';
-                    let htmlOutput = '';
-                    if (json.result.status) {
-                        if (json.result.status == "continued") {
-                            this.continuation = true;
-                            let msg = "live-code-runner: executing...";
-                            vscode.window.setStatusBarMessage(msg, 2000);
-                            setTimeout(() => this.sendCode(), 1);
-                        } else if (json.result.status == "waiting-input") {
-                            this.continuation = true;
-                            this.waiting_input = true;
-                        } else {
-                            this.continuation = false;
-                            this.waiting_input = false;
-                        }
-                    }
-                    if (json.result.console) {
-                        for (let c of Array.from(json.result.console)) {
-                            if (c[0] == 'stdout') {
-                                htmlOutput = htmlOutput  + `<span class="live-console stdout">${this.escapeHtml(c[1])}</span>`;
-                            }
-                            if (c[0] == 'stderr') {
-                                htmlOutput = htmlOutput  + `<span class="live-console stderr">${this.escapeHtml(c[1])}</span>`;
-                            }
-                            if (c[0] == 'media') {
-                                if (c[1][0] === "image/svg+xml") {
-                                    htmlOutput = htmlOutput + c[1][1];
-                                }
-                            }
-                        }
-                    }
-                    if (htmlOutput != '') {
-                        this.LiveCodeRunnerView.addHtmlContent(htmlOutput);
-                        this.LiveCodeRunnerView.showResultPanel();
-                    }
-                    if (buffer != '') {
-                        this.LiveCodeRunnerView.addConsoleMessage(buffer);
-                    }
-                    if (json.result.status == "finished") {
-                        let elapsed = (new Date().getTime() - this._exec_starts) / 1000;
-                        vscode.window.setStatusBarMessage(`live-code-runner: finished running (${elapsed} sec.)`);
-                        let msg = `[LOG] Finished. (${elapsed} sec.)`;
-                        this.LiveCodeRunnerView.addConsoleMessage(msg);
-                    }
-                    if (this.waiting_input === true) {
-                        return vscode.window.showInputBox({
-                            ignoreFocusOut: true,
-                            placeHolder: "Input to kernel",
-                        }).then( response => {
-                            if (response === undefined) {
-                                this.code = '';
-                            } else {
-                                this.code = response;
-                            }
-                            return this.sendCode();
-                        });
+            }
+            if (this.waiting_input === true) {
+                return vscode.window.showInputBox({
+                    ignoreFocusOut: true,
+                    placeHolder: "Input to kernel",
+                }).then( response => {
+                    if (response === undefined) {
+                        this.code = '';
                     } else {
-                        return true;
+                        this.code = response;
                     }
+                    return this.sendCode();
                 });
+            } else {
                 return true;
             }
-        );
-    }
-    escapeHtml(text) {
-        return text.replace(/[\"&<>]/g, function (a) {
-        return { '"': '&quot;', '&': '&amp;', '<': '&lt;', '>': '&gt;' }[a];
+        }).catch((errorType, errorMsg) => {
+            vscode.window.showErrorMessage(`live-code-runner: ${errorMsg}`);
+            switch (errorType) {
+            case ai.backend.Client.ERR_SERVER:
+                this.continuation = false;
+                break;
+            case ai.backend.Client.ERR_RESPONSE:
+                break;
+            case ai.backend.Client.ERR_REQUEST:
+                break;
+            }
+            return false;
         });
     }
+
     generateRunId() {
         var text = "";
         var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -352,4 +340,3 @@ export class LiveCodeRunner {
         return text;
     }
 }
-

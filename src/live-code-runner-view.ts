@@ -39,6 +39,33 @@ export class LiveCodeRunnerView {
         return this.console_log.show();
     }
 
+    addOutput(consoleItems) {
+        let html: string = '';
+        for (let c of Array.from(consoleItems)) {
+            switch (c[0]) {
+            case 'stdout':
+                html += `<span class="live-console stdout">${this.escapeHtml(c[1])}</span>`;
+                break;
+            case 'stderr':
+                html += `<span class="live-console stderr">${this.escapeHtml(c[1])}</span>`;
+                break;
+            case 'media':
+                switch (c[1][0]) {
+                case 'image/svg+xml':
+                    html += c[1][1];
+                    break;
+                default:
+                    // pass
+                }
+                break;
+            default:
+                // pass
+            }
+        }
+        this.addHtmlContent(html);
+        return html != '';
+    }
+
     addHtmlContent(content) {
         this.provider.appendContent(content);
     	return this.provider.update(this.previewUri);
@@ -51,6 +78,12 @@ export class LiveCodeRunnerView {
 
     showResultPanel(){
         return vscode.commands.executeCommand('vscode.previewHtml', this.previewUri, vscode.ViewColumn.Two, 'RESULT');
+    }
+
+    private escapeHtml(text) {
+        return text.replace(/[\"&<>]/g, function (a) {
+        return { '"': '&quot;', '&': '&amp;', '<': '&lt;', '>': '&gt;' }[a];
+        });
     }
 }
 
