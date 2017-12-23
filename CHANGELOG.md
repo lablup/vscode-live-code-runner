@@ -3,6 +3,15 @@ All notable changes to the "live-code-runner" extension will be documented in th
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [2.1.0] - 2017-12-21
+ - Prepare to use backend.AI client library
+
+## [2.0.0] - 2017-12-20
+ - Support newer backend.AI API
+
+## [1.3.0] - 2017-11-16
+ - Update backend.ai client SDK
+
 ## [1.2.0] - 2017-10-13
  - Change runtime backend to Backend.AI
 
