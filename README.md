@@ -1,6 +1,6 @@
 # live-code-runner
 
-Run codes in Visual Studio Code via Backend.AI Cloud server (https://cloud.backend.ai). You can run your code (or code snippet) without installing or setting any programming environment with this extension.
+Run codes in Visual Studio Code via Backend.AI Cloud server (https://cloud.backend.ai) or your own Backend.AI server. You can run your code (or code snippet) without installing or setting any programming environment with this extension.
 
  `live-code-runner` is Visual Studio Code editor extension to add remote code execution feature using [Backend.AI Cloud Service](https://cloud.backend.ai). `live-code-runner` uses [Backend.AI framework](https://www.lablup.ai/#/ground) and [Backend.AI API](http://docs.backend.ai). Currently, Backend.AI supports 15 programming languages now.
 
