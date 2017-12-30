@@ -5,7 +5,7 @@
     "version": "3.0.0",
     "icon": "images/live-code-runner-logo.png",
     "publisher": "lablup",
-    "license": "See LICENSE in LICENSE file",
+    "license": "MIT",
     "bugs": {
         "url": "https://github.com/lablup/vscode-live-code-runner/issues"
     },
