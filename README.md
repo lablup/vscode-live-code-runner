@@ -8,7 +8,7 @@ Run codes in Visual Studio Code via Backend.AI Cloud server (https://cloud.backe
 
 ### API Key registration
 
- 1. Get your own API key pair (API key / Secret key) at [Backend.AI Cloud Service](https://cloud.backend.ai)
+ 1. Get your own API key pair (API key / Secret key) at [Backend.AI Cloud Service](https://cloud.backend.ai) or your on-premise Backend.AI server.
  2. Type your API key pair on preferences page (Code - Preferences - Settings - 'live-code-runner')
 
 ### Run
