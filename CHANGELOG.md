@@ -5,7 +5,9 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [3.0.0] - 2017-12-27
  - Rewritten with official backend.AI node.js library (backend.ai-client)
- 
+ - Unified view code for easier extension
+ - Support custom endpoint
+
 ## [2.1.0] - 2017-12-21
  - Prepare to use backend.AI client library
 
