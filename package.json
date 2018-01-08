@@ -2,7 +2,7 @@
     "name": "live-code-runner",
     "displayName": "Live Code Runner",
     "description": "Run your codes via Backend.AI Cloud (https://cloud.backend.ai)",
-    "version": "4.0.0",
+    "version": "4.2.0",
     "icon": "images/live-code-runner-logo.png",
     "publisher": "lablup",
     "license": "MIT",
@@ -94,7 +94,7 @@
         "test": "node ./node_modules/vscode/bin/test"
     },
     "dependencies": {
-        "backend.ai-client": ">=0.3.0",
+        "backend.ai-client": ">=0.4.0",
         "punycode": "^2.1.0"
     },
     "devDependencies": {

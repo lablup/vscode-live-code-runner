@@ -1,7 +1,7 @@
 'use strict';
 /*
 vscode-live-code-runner
-(C) Copyright 2016-2017 Lablup Inc.
+(C) Copyright 2016-2018 Lablup Inc.
 Licensed under MIT
 */
 /*jshint esnext: true */
