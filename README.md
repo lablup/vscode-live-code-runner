@@ -23,32 +23,37 @@ Run codes in Visual Studio Code via Backend.AI Cloud server (https://cloud.backe
 
 ## Requirements
 
-### Supported Languages / frameworks on Lablup.AI Cloud
+## Supporting modes
 
-| Language      | Version | Batch | Query | Input Hook | TTY | ETC |
-|---------------|------|---|---|---|---|-------------------|
-| C             | 6.3  | O | O | O |   | GCC compiler      |
-| C++ (C+14)    | 6.3  | O | O | O |   | GCC compiler      |
-| Go            | 1.9  | O | O |   |   |                   | 
-| Haskell       | 8.2  | O | O |   |   |                   |
-| Java          | 8.0  | O | O |   |   |                   |
-| Linux Console | -    |   | O | O | O | Not supported in this plugin (Soon!) |  
-| Node.js       | 6    |   | O |   |   |                   |
-| Octave        | 4.2  |   | O |   |   |                   |
-| Python        | 2.7  | O | O | O |   |                   |
-| Python        | 3.6  | O | O | O |   |                   | 
-| Rust          | 1.21 | O | O |   |   |                   | 
-| PHP           | 7.0  |   | O |   |   |                   |
-| R             | 3.0  |   | O |   |   | CRAN R            |
+Here we list the latest versions of our supported kernel images.  
+"\*" in the Query mode column means that it supports preservation of global contexts across different query runs.
 
-| Deep-Learning Framework | Version | Batch | Query | Input Hook | TTY | ETC |
-|---------------|------|---|---|---|---|-------------------|
-| TensorFlow    | 1.4  | O | O | O |   | Bundled w/Keras 2 |
-| PyTorch       | 0.2  | O | O | O |   |                   |
-| Theano        | 0.9  | O | O | O |   | Bundled w/Keras 2 |
-| CNTK          |(WIP) | O | O | O |   | Bundled w/Keras 2 |
+| Language      | Image Name              | Version | Batch | Query | Input Hook | TTY | Runtime Impl. |
+|---------------|-------------------------|---------|-------|-------|---|---|--------------------|
+| C             | `lablup/kernel-c`       | 6.3     | O     | O     | O |   | GCC on Alpine 3.6  |
+| C++ (14)      | `lablup/kernel-cpp`     | 6.3     | O     | O     |   |   | GCC on Alpine 3.6  |
+| Go            | `lablup/kernel-go`      | 1.9     | O     | O     |   |   |                    | 
+| Haskell       | `lablup/kernel-haskell` | 8.2     | O     | O     |   |   |                    |
+| Java          | `lablup/kernel-java`    | 8.0     | O     | O     |   |   |                    |
+| Linux Console | `lablup/kernel-git`     | -       | -     | -     | - | O | Bash on Alpine 3.6 |  
+| Lua           | `lablup/kernel-lua`     | 5.3     | O     | O     |   |   |                    |
+| Node.js       | `lablup/kernel-nodejs`  | 6.11    | O     | O     |   |   |                    |
+| Octave        | `lablup/kernel-octave`  | 4.2     | O     | O     |   |   |                    |
+| ~Python~      | `lablup/kernel-python`  | 2.7     | O     | O     | O |   | temporarily unsupported |
+| Python        | `lablup/kernel-python`  | 3.6     | O     | O\*   | O |   |                    |
+| Rust          | `lablup/kernel-rust`    | 1.17    | O     | O     |   |   |                    |
+| PHP           | `lablup/kernel-php`     | 7.1     | O     | O     |   |   |                    |
+| R             | `lablup/kernel-r`       | 3.3     | O     | O     |   |   | CRAN R             |
 
-### Languages (to be ready soon)
+| Deep-Learning Framework | Image Name           | Version | Batch | Query | Input Hook | TTY | Runtime Impl. |
+|------------|-----------------------------------|---------|-------|-------|-----|---|-------------------|
+| TensorFlow | `lablup/kernel-python-tensorflow` | 1.4     | O     | O\*   | O   |   | Bundled w/Keras 2 |
+| TensorFlow | `lablup/kernel-python-tensorflow` | 1.3     | O     | O\*   | O   |   | Bundled w/Keras 2 |
+| PyTorch    | `lablup/kernel-python-torch`      | 0.2     | O     | O\*   | O   |   |                   |
+| Theano     | `lablup/kernel-python-theano`     | 1.0     | O     | O\*   | O   |   | Bundled w/Keras 2 |
+| CNTK       | `lablup/kernel-python-cntk`       | (WIP)   | O     | O\*   | O   |   | Bundled w/Keras 2 |
+
+### Languages and modes (to be ready soon)
 
  * Swift (via Swift opensource version)
 
