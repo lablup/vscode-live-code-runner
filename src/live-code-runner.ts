@@ -221,13 +221,14 @@ export class LiveCodeRunner {
             switch (grammarName) {
                 case "python":
                 let code = editor.document.getText();
-                if (code.search("import tensorflow") > 0) {
+                console.log(code.search("import tensorflow") );
+                if (code.search("import tensorflow") > -1) {
                     kernelName = "python-tensorflow:latest-gpu";
-                } else if (code.search("import keras") > 0) {
+                } else if (code.search("import keras") > -1) {
                     kernelName = "python-tensorflow:latest-gpu";
-                } else if (code.search("import theano") > 0) {
+                } else if (code.search("import theano") > -1) {
                     kernelName = "python-theano:latest";
-                } else if (code.search("import caffe") > 0) {
+                } else if (code.search("import caffe") > -1) {
                     kernelName = "python-caffe:latest";
                 } else {
                     kernelName = "python:latest";
