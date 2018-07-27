@@ -47,9 +47,8 @@ Here we list the latest versions of our supported kernel images.
 
 | Deep-Learning Framework | Image Name           | Version | Batch | Query | Input Hook | TTY | Runtime Impl. |
 |------------|-----------------------------------|---------|-------|-------|-----|---|-------------------|
-| TensorFlow | `lablup/kernel-python-tensorflow` | 1.4     | O     | O\*   | O   |   | Bundled w/Keras 2 |
-| TensorFlow | `lablup/kernel-python-tensorflow` | 1.3     | O     | O\*   | O   |   | Bundled w/Keras 2 |
-| PyTorch    | `lablup/kernel-python-torch`      | 0.2     | O     | O\*   | O   |   |                   |
+| TensorFlow | `lablup/kernel-python-tensorflow` | 1.8-1.3 | O     | O\*   | O   |   | Bundled w/Keras 2 |
+| PyTorch    | `lablup/kernel-python-torch`      | 2.0-0.2 | O     | O\*   | O   |   |                   |
 | Theano     | `lablup/kernel-python-theano`     | 1.0     | O     | O\*   | O   |   | Bundled w/Keras 2 |
 | CNTK       | `lablup/kernel-python-cntk`       | (WIP)   | O     | O\*   | O   |   | Bundled w/Keras 2 |
 
@@ -63,10 +62,6 @@ This extension contributes the following settings:
 
 * `live-code-runner.accessKey`: set your access key created at https://cloud.backend.ai .
 * `live-code-runner.secretKey`: set your secret key created at https://cloud.backend.ai .
-
-## Known Issues
-
- * Text input support will be coming soon.
 
 ## Troubleshooting
 
