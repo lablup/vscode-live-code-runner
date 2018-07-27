@@ -56,6 +56,12 @@ Here we list the latest versions of our supported kernel images.
 
  * Swift (via Swift opensource version)
 
+### Work-in-progress
+
+ * Multi-file support (is already supported via CLI, but not in JavaScript SDK yet.)
+ * Virtual Folder mount / navigation (is already supported via CLI, but not in JavaScript SDK yet.)
+
+
 ## Extension Settings
 
 This extension contributes the following settings:
